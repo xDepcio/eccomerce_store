@@ -68,7 +68,7 @@ const sessionReducer = (state = initialState, action) => {
         case LOAD_USER: {
             const newState = {...state}
             newState.user = action.user
-            console.log('LOADING USER')
+            // console.log('LOADING USER')
             return newState
         }
         case REMOVE_USER: {

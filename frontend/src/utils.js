@@ -20,20 +20,24 @@ export const categoriesMapped = {
     'chlodzenia-wodne': 'Chłodzenia wodne',
     'Chłodzenia CPU': 'chlodzenia-cpu',
     'chlodzenia-cpu': 'Chłodzenia CPU',
-    'Pasty termoprzewodzące': 'pasty-termoprzewodzące',
-    'pasty-termoprzewodzące': 'Pasty termoprzewodzące',
+    'Pasty termoprzewodzące': 'pasty-termoprzewodzace',
+    'pasty-termoprzewodzace': 'Pasty termoprzewodzące',
     'Chłodzenia komputera': 'chlodzenia-komputera',
     'chlodzenia-komputera': 'Chłodzenia komputera',
     'Pamięci RAM': 'pamieci-ram',
     'pamieci-ram': 'Pamięci RAM',
     'Sprzęt AGD': 'sprzet-agd',
     'sprzet-agd': 'Sprzęt AGD',
+    'Części komputerowe': 'czesci-komputerowe',
+    'czesci-komputerowe': 'Części komputerowe',
+    'Chłodzenia PC': 'chlodzenia-pc',
+    'chlodzenia-pc': 'Chłodzenia PC'
 }
 
 export const urlToCategoryName = (string) => {
     let output = string.replace('-', ' ')
     output = categoriesMapped[string] === undefined ? output[0].toUpperCase() + output.slice(1) : categoriesMapped[string]
-    console.log('output', output)
+    // console.log('output', output)
     return output
 }
 

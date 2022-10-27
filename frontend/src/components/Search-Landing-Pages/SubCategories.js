@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { getCategories } from "../../store/shop"
-import { categoriesMapped, toValidUrl } from "../../utils"
+import { categoriesMapped, toValidUrl, urlToCategoryName } from "../../utils"
 
 
 function SubCategories() {
@@ -16,7 +16,7 @@ function SubCategories() {
     console.log(url.pathname.split('/'))
 
     useEffect(() => {
-        const data = dispatch(getCategories('subCategories', categoriesMapped[url.pathname.split('/')[2]]))
+        const data = dispatch(getCategories('subCategories', urlToCategoryName(url.pathname.split('/')[2])))
     }, [])
 
     return (

@@ -9,8 +9,13 @@ import {faStar, faStarHalf} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 function CategoryItemsPage() {
-    const searchedItems = useSelector((state) => Object.values(state.shop.searchedItems?.items))
-    const path = useSelector((state) => state.shop.searchedItems?.path)
+    const searchedItems = useSelector((state) => {
+        if(state.shop.searchedItems) {
+            return Object.values(state.shop.searchedItems)
+        }
+        return []
+    })
+    const path = useSelector((state) => state.shop.path)
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
     const navigate = useNavigate()

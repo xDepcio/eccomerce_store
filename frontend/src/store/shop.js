@@ -97,7 +97,7 @@ const shopReducer = (state = initialState, action) => {
         }
         case LOAD_ITEMS: {
             const newState = {...state}
-            console.log(action.items)
+            // console.log(action.items)
             // newState.searchedItems = action.items
 
             let normalizedItems = {}
@@ -106,6 +106,7 @@ const shopReducer = (state = initialState, action) => {
             })
 
             newState.searchedItems = normalizedItems
+            newState.path = action.items.path
 
             return newState
         }

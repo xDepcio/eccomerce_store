@@ -26,7 +26,7 @@ function App() {
       })
   }, [])
 
-  console.log('path', url)
+  // console.log('path', url)
   return isLoaded && (
     <>
     {url.pathname !== '/login' && (
