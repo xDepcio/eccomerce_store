@@ -1,0 +1,173 @@
+.promo-wrapper {
+    /* width: 40%; */
+    /* height: 500px; */
+    border-radius: 15px;
+    background-color: rgb(62, 162, 255);
+    display: grid;
+    grid-template-rows: 50px auto;
+    /* border-top: 1px solid black; */
+    min-width: 375.27px;
+}
+
+.promo-header {
+    width: 100%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 24px;
+}
+
+.promo-container {
+    border-radius: 15px;
+    background-color: white;
+    width: 100%;
+}
+
+.daily-item-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.daily-item-image > img {
+    margin-top: 25px;
+    width: 45%;
+}
+
+.daily-item-name {
+    margin-top: 15px;
+    max-width: 76%;
+    text-align: center;
+}
+
+.daily-item-prev-price {
+    color: rgb(56, 56, 56);
+    margin-top: 20px;
+    text-decoration-line: line-through;
+}
+
+.daily-item-new-price {
+    color: rgb(62, 162, 255);
+    font-size: 26px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.daily-item-stock-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 75%;
+    margin-top: 10px;
+}
+
+.daily-item-stock-info > p {
+    font-size: 14px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.daily-item-stock-info > p > span {
+    font-weight: 600;
+}
+
+
+.daily-item-stock-info > p:last-child {
+    text-align: end;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+.stock-loader {
+    width: 100%;
+    height: 15px;
+    background-color: #ebeaea;
+    border-radius: 999px;
+    grid-column: 1/3;
+}
+
+.left-mark {
+    background-color: rgb(62, 162, 255);
+    height: 100%;
+    border-radius: 999px;
+    width: 30%;
+}
+
+.daily-item-cart {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    place-items: center;
+    margin-top: 20px;
+    justify-content: space-evenly;
+    width: 90%;
+    margin-bottom: 30px;
+}
+
+.daily-coupon {
+    border: 3px solid rgb(62, 162, 255);
+    border-radius: 5px;
+    background-color: rgb(62, 162, 255);
+    /* padding: 5px; */
+}
+
+.daily-coupon > p:first-child {
+    padding: 5px 35px;
+    color: white;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+.daily-coupon > p:last-child {
+    padding: 5px 20px;
+    color: rgb(62, 162, 255);
+    text-align: center;
+    border-radius: 5px;
+    font-size: 19px;
+    background-color: white;
+}
+
+.daily-add-to-cart-button {
+    background-color: rgb(62, 162, 255);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    place-items: center;
+    text-align: center;
+    height: 53.27px;
+    width: 129.12px;
+}
+
+.daily-shop-icon {
+    font-size: 25px;
+}
+
+.daily-item-countdown {
+    font-size: 33px;
+    color: rgb(75, 75, 75);
+    margin-bottom: 30px;
+}
+
+@media screen and (max-width: 690px){
+
+    .reco-items-container {
+        grid-template-columns: 50% 50%;
+    }
+}
+
+@media screen and (max-width: 425px){
+    .promo-wrapper {
+        min-width: unset;
+    }
+
+}

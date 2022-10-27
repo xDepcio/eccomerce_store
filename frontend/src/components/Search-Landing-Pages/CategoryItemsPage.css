@@ -1,0 +1,302 @@
+.items-page-wrapper {
+    display: grid;
+    /* background-color: red; */
+    height: 900px;
+    width: 100%;
+    margin: 0 auto;
+    grid-template-columns: 240px auto;
+    grid-template-rows: max-content auto;
+    grid-template-areas:
+    "filter sorter"
+    "filter main";
+    margin-top: 30px;
+    margin-bottom: 600px;
+    gap: 20px;
+}
+
+.items-page-outer-wrapper {
+    width: 80vw;
+    margin: 0 auto;
+}
+
+.page-filter {
+    background-color: white;
+    grid-area: filter;
+    border-radius: 15px;
+}
+
+.page-sorter {
+    grid-area: sorter;
+    /* background-color: aqua; */
+    align-items: flex-end;
+}
+
+.items-display {
+    grid-area: main;
+    /* background-color: orange; */
+}
+
+.page-sorter {
+    display: flex;
+}
+
+/* ========================== price slider styles ===================== */
+.thermometer-slider {
+    /* height: 200px; */
+    width: 400px;
+}
+
+.thermometer-thumb {
+    height: 25px;
+    line-height: 25px;
+    width: 25px;
+    text-align: center;
+    background-color: rgb(75, 168, 255);
+    color: #fff;
+    border-radius: 50%;
+    cursor: grab;
+}
+
+.thermometer-track {
+    top: 7.5px;
+    bottom: 0;
+    background: gray;
+    border-radius: 999px;
+    /* left: 5px; */
+    height: 7px;
+}
+
+.thermometer-track.thermometer-track-0 {
+    background: gray;
+}
+
+.thermometer-track.thermometer-track-1 {
+    background: rgb(75, 168, 255);
+}
+
+.thermometer-track.thermometer-track-2 {
+    background: gray;
+}
+
+.actual-temp {
+    width: 200px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+/* ===================================================== */
+
+.price-range-header {
+    margin-right: 10px;
+}
+
+.price-range {
+    position: relative;
+    height: 60px;
+}
+
+.range-value-info {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.price-from, .price-to {
+    background-color: white;
+    width: 90px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 8px;
+    position: relative;
+    bottom: 0;
+    border: 1px solid rgb(173, 173, 173);
+}
+
+/* .sort-selector {
+    height: fit-content;
+    padding: 10px 30px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid rgb(173, 173, 173);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.page-sorter > select {
+    /* margin-left: 5px; */
+    /* padding-left: 5px; */
+    /* left: -65px; */
+    border: none;
+    padding: 10px 30px;
+    font-size: 16px;
+    height: 80%;
+    margin-right: 35px;
+    border-radius: 8px;
+    border: 1px solid rgb(173, 173, 173);
+}
+
+.page-sorter > select:focus {
+    outline: none;
+}
+
+.in-price-range-all-slider-wrapper {
+    display: flex;
+}
+
+.page-selector {
+    display: flex;
+    align-items: center;
+}
+
+.previous-page, .next-page {
+    background-color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: fit-content;
+    border: 1px solid rgb(173, 173, 173);
+    width: 100px;
+    font-size: 15px;
+}
+
+.previous-page > span, .next-page > span {
+    position: absolute;
+}
+
+.page-nav {
+    display: flex;
+    height: fit-content;
+    align-items: flex-end;
+    margin-left: auto;
+    align-self: flex-end;
+}
+
+.page-size-selector {
+    border: none;
+    padding: 10px 10px;
+    font-size: 16px;
+    height: 100%;
+    margin-right: 35px;
+    border-radius: 8px;
+    border: 1px solid rgb(173, 173, 173);
+}
+
+.page-size-selector:focus {
+    outline: none;
+}
+
+.current-page {
+    background-color: white;
+    border: 1px solid rgb(173, 173, 173);
+    border-radius: 999px;
+    padding: 20px;
+    margin-left: 5px;
+    position: relative;
+    margin-right: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.current-page > span {
+    position: absolute;
+}
+
+/* Single search item styles */
+.single-search-item-wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 20% 60% 20%;
+    margin-bottom: 20px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: fit-content;
+    box-shadow: 0px 0px 13px -8px rgba(66, 68, 90, 1);
+}
+
+.image-wrapper-in-buy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-wrapper-in-buy > img {
+    width: 80%;
+}
+
+.in-buy-item-name {
+    font-size: 19px;
+    font-weight: 500;
+    max-width: 80%;
+}
+
+.in-buy-item-name:hover {
+    text-decoration: underline;
+}
+
+.text-area {
+    margin-left: 15px;
+}
+
+.buy-area {
+    position: relative;
+}
+
+.buy-area > button {
+    border: none;
+    background-color: rgb(75, 168, 255);
+    padding: 12px 15px;
+    color: white;
+    border-radius: 5px;
+    font-size: 17px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    font-weight: 600;
+}
+
+.price-header-in-buy {
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.star-icon {
+    /* background-color: red; */
+    /* border: 1px solid black; */
+    /* color: white; */
+    font-weight: 400;
+    color: rgb(255, 199, 58);
+}
+
+.in-buy-item-reviews {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.in-buy-item-reviews > span {
+    margin-left: 5px;
+}
+
+.item-short-specs {
+    margin-left: 15px;
+    margin-top: 12px;
+}
+
+.item-short-specs > li {
+    font-size: 12px;
+    margin: 2px 0;
+    list-style-type: disc;
+}
+
+.item-short-specs > li > span {
+    font-weight: 500;
+}
