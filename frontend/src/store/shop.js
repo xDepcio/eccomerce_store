@@ -3,6 +3,7 @@ import { csrfFetch } from "./csrf"
 
 const LOAD_CATEGORIES = 'shop/loadCategories'
 const LOAD_ITEMS = 'shop/loadItems'
+const LOAD_SINGLE_ITEM = 'shop/loadSingleItem'
 
 // Normal action creator
 
@@ -17,6 +18,13 @@ const loadItems = (items) => {
     return {
         type: LOAD_ITEMS,
         items
+    }
+}
+
+const loadSingleItem = (item) => {
+    return {
+        type: LOAD_SINGLE_ITEM,
+        item
     }
 }
 
@@ -40,6 +48,17 @@ export const getCategoryItems = (finalCategoryName, searchParamsObj) => async (d
         const data = await response.json()
         console.log(data)
         dispatch(loadItems(data))
+        return response
+    }
+}
+
+export const getSingleItem = (itemId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/all/${itemId}`)
+
+    if(response.ok) {
+        const data = await response.json()
+        console.log(data)
+        dispatch(loadSingleItem(data))
         return response
     }
 }
@@ -108,6 +127,14 @@ const shopReducer = (state = initialState, action) => {
             newState.searchedItems = normalizedItems
             newState.path = action.items.path
 
+            return newState
+        }
+        case LOAD_SINGLE_ITEM: {
+            const newState = {...state}
+            newState.item = action.item.ItemSpec
+            newState.path = action.item.path
+            newState.item.imagesUrl = newState.item.imagesUrl.split(' ')
+            newState.item.specs = JSON.parse(newState.item.specs)
             return newState
         }
         default: {

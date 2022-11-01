@@ -1,5 +1,5 @@
 const express = require('express')
-const {Item, FinalCategory, SubCategory, MainCategory} = require('../../db/models')
+const {Item, FinalCategory, SubCategory, MainCategory, ItemSpec} = require('../../db/models')
 const asyncHandler = require('express-async-handler')
 
 const router = express.Router()
@@ -67,7 +67,7 @@ router.get('/categories/:type/:parent', asyncHandler(async (req, res) => {
 
 
 router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
-    console.log(res.locals.query.limit, res.locals.query.offset)
+    // console.log(res.locals.query.limit, res.locals.query.offset)
     const items = await FinalCategory.findOne({
         where: {
             name: req.params.finalCategoryName
@@ -93,6 +93,46 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
         path
     })
     // res.json(items?.Items)
+}))
+
+router.get('/all/:itemId', asyncHandler(async (req, res) => {
+    const item = await Item.findOne({
+        where: {
+            id: req.params.itemId
+        },
+        attributes: [],
+        include: [
+            {
+                model: FinalCategory,
+                attributes: ['name'],
+                include: {
+                    model: SubCategory,
+                    attributes: ['name'],
+                    include: {
+                        model: MainCategory,
+                        attributes: ['name'],
+                    }
+                }
+            },
+            {
+                model: ItemSpec,
+                attributes: {
+                    exclude: [
+                        'createdAt',
+                        'updatedAt',
+                        'itemId',
+                        'id',
+
+                    ]
+                }
+            }
+        ]
+    })
+
+    res.json({
+        ItemSpec: item.ItemSpec,
+        path: `Wszystkie kategorie/${item.FinalCategory.SubCategory.MainCategory.name}/${item.FinalCategory.SubCategory.name}/${item.FinalCategory.name}/${item.ItemSpec.name}`
+    })
 }))
 
 //
