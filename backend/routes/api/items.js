@@ -1,12 +1,12 @@
 const express = require('express')
-const {Item, FinalCategory, SubCategory, MainCategory, ItemSpec} = require('../../db/models')
+const {Item, FinalCategory, SubCategory, MainCategory, ItemSpec, Review, sequelize} = require('../../db/models')
 const asyncHandler = require('express-async-handler')
 
 const router = express.Router()
 
 router.use('/', require('../../utils/pagination'))
 
-// Get categories base on depth and tree path
+// Get categories based on depth and tree path
 router.get('/categories/:type/:parent', asyncHandler(async (req, res) => {
     console.log(req.params.type)
     let categories = {}
@@ -65,7 +65,7 @@ router.get('/categories/:type/:parent', asyncHandler(async (req, res) => {
     })
 }))
 
-
+// Get items in final category
 router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     // console.log(res.locals.query.limit, res.locals.query.offset)
     const items = await FinalCategory.findOne({
@@ -95,6 +95,7 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     // res.json(items?.Items)
 }))
 
+// Get item specific data
 router.get('/all/:itemId', asyncHandler(async (req, res) => {
     const item = await Item.findOne({
         where: {
@@ -135,45 +136,54 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
     })
 }))
 
-//
-// router.post('/', validateLogin, asyncHandler(async (req, res, next) => {
-//     console.log('LOGINGNGNGNGN')
-//     const {credential, password} = req.body
 
-//     const user = await User.login({credential, password})
+// Get item reviews
+router.get('/all/:itemId/reviews', asyncHandler(async (req, res) => {
 
-//     if (!user) {
-//         const err = new Error('Login failed');
-//         err.status = 401;
-//         err.title = 'Login failed';
-//         err.errors = ['The provided credentials were invalid.'];
-//         return next(err);
-//     }
+    let order
+    switch(req.query.sortBy) {
+        case 'rating': {
+            order = [['reviewRating', 'DESC']]
+            break
+        }
+        case 'dateDesc': {
+            console.log('===============')
+            order = [['createdAt', 'DESC']]
+            break
+        }
+        case 'dateAsc': {
+            order = [['createdAt', 'ASC']]
+            break
+        }
+        default: {
+            order = [['reviewRating', 'DESC']]
+            break
+        }
+    }
 
-//     await setTokenCookie(res, user);
+    const reviews = await Item.findByPk(req.params.itemId, {
+        include: {
+            model: Review,
+            order: order,
+            limit: 10,
+        },
+    })
 
-//     return res.json({
-//         user
-//     });
-// }))
+    console.log(await reviews.countReviews())
 
-// // Log out
-// router.delete('/', (_req, res) => {
-//     res.clearCookie('token');
-//     return res.json({ message: 'success' });
-// });
+    res.json(reviews.Reviews)
+}))
 
-// // Restore session user
-// router.get('/', restoreUser, (req, res) => {
-//     const { user } = req;
-//     if (user) {
-//         return res.json({
-//             user: user.toSafeObject()
-//         });
-//     }
-//     else return res.json({});
-// });
+// Post item review rating
+router.post('/all/:itemId/reviews/:reviewId', asyncHandler(async (req, res) => {
+    const review = await Review.findByPk(req.params.reviewId)
 
+    review.reviewRating = review.reviewRating + Math.sign(req.body.ratingValue) // ratingValue is +1 or -1
+    Math.sign(req.body.ratingValue) === 1 ? review.thumbsUp += 1 : review.thumbsDown += 1
+
+    await review.save()
+    res.json(review)
+}))
 
 
 

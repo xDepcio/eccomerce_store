@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Item.belongsTo(models.FinalCategory, {foreignKey: 'categoryId'})
       Item.hasOne(models.ItemSpec, {foreignKey: 'itemId'})
+      Item.hasMany(models.Review, {foreignKey: 'itemId'})
     }
   }
   Item.init({

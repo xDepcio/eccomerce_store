@@ -1,7 +1,7 @@
-import { faArrowDown, faArrowUpShortWide, faCartShopping, faExpand, faExpandArrowsAlt, faExternalLink, faGear, faReceipt, faShuttleVan, faStar, faThumbsDown, faThumbsUp, faTruck, faUser, faVanShuttle } from '@fortawesome/free-solid-svg-icons'
+import { faArrowDown, faArrowUpShortWide, faCartShopping, faExpand, faExpandArrowsAlt, faExternalLink, faGear, faReceipt, faRefresh, faShuttleVan, faStar, faThumbsDown, faThumbsUp, faTruck, faUser, faVanShuttle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect } from 'react'
-import { getSingleItem } from "../../store/shop"
+import { useEffect, useState } from 'react'
+import { getItemReviews, getSingleItem } from "../../store/shop"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import './ItemPage.css'
@@ -11,13 +11,20 @@ function ItemPage() {
     const dispatch = useDispatch()
     const item = useSelector((state) => state.shop.item)
     const path = useSelector((state) => state.shop.path)
+    const reviews = useSelector((state) => state.shop.reviews)
 
-    const itemId = useLocation().pathname.split('/')
+    const itemId = useLocation().pathname.split('/')[2]
     console.log('itemId', itemId)
-    
+
+    const [sortBy, setSortBy] = useState('rating')
+
     useEffect(() => {
-        const item = dispatch(getSingleItem(itemId[2]))
+        const item = dispatch(getSingleItem(itemId))
     }, [])
+
+    useEffect(() => {
+        const reviews = dispatch(getItemReviews(itemId, sortBy))
+    }, [sortBy])
 
     if(!item) {
         return (
@@ -207,15 +214,53 @@ function ItemPage() {
                             </div>
                             <div className='reviews-sorter'>
                                 <p>Sortowanie:</p>
-                                <select>
-                                    <option>Od najbardziej pomocnych</option>
-                                    <option>Od najnowszych</option>
-                                    <option>Od najstarszych</option>
+                                <select onChange={(e) => setSortBy(e.currentTarget.value)}>
+                                    <option value={'rating'}>Od najbardziej pomocnych</option>
+                                    <option value={'dateDesc'}>Od najnowszych</option>
+                                    <option value={'dateAsc'}>Od najstarszych</option>
                                 </select>
                             </div>
                         </div>
                         <div className='single-reviews-wrapper'>
-                        <div className='single-review'>
+                            {reviews?.map((ele, i) => {
+                                return (
+                                    <div key={i} className='single-review'>
+                                        <div className='personal-info'>
+                                            <div className='prof-name'>
+                                                <div>
+                                                    <FontAwesomeIcon className='rev-user' icon={faUser} />
+                                                </div>
+                                                <p>{ele.reviewerFirstName}</p>
+                                            </div>
+                                            <div className='rev-rating'>
+                                                {(new Array(ele.rating).fill(null)).map((e, i) => {
+                                                    return <FontAwesomeIcon key={i} className='star-icon' icon={faStar} />
+                                                })}
+                                                {(new Array(5 - ele.rating).fill(null)).map((e, i) => {
+                                                    return <FontAwesomeIcon key={i} className='star-icon-gray' icon={faStar} />
+                                                })}
+                                            </div>
+                                            <div className='rev-date'>
+                                                <p>{ele.createdAt.slice(0, 10).split('-').reverse().join('-')}</p>
+                                            </div>
+                                            <div className='rating-rev'>
+                                                <div>
+                                                    <FontAwesomeIcon icon={faThumbsUp} />
+                                                    <p>{`(${ele.thumbsUp})`}</p>
+                                                </div>
+                                                <div>
+                                                    <FontAwesomeIcon icon={faThumbsDown} />
+                                                    <p>{`(${ele.thumbsDown})`}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className='review-content'>
+                                            <p>{ele.reviewContent}</p>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {/* <div className='single-review'>
                                 <div className='personal-info'>
                                     <div className='prof-name'>
                                         <div>
@@ -346,7 +391,13 @@ function ItemPage() {
                                 <div className='review-content'>
                                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda quidem suscipit voluptatum quibusdam porro sit tempora quaerat, odio reprehenderit, eveniet corrupti! Sint nisi aperiam excepturi et nostrum illum officia animi. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae doloribus praesentium ullam possimus accusamus iure sunt atque, fugit, aperiam cupiditate, numquam quasi ea reprehenderit laborum nesciunt dolor molestiae minima dolorum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, accusamus repellat! Voluptatum expedita quod, iusto natus illum nam ipsum laboriosam veniam cumque vitae fugiat, non magni incidunt aspernatur cum similique. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam quaerat voluptatum neque, asperiores provident optio accusamus accusantium, nostrum vel, unde eligendi. Quis possimus odio, atque labore nemo eaque quaerat aperiam.</p>
                                 </div>
-                            </div>
+                            </div> */}
+                        </div>
+                        <div className='show-more-reviews-wrapper'>
+                            <button>
+                                <FontAwesomeIcon icon={faRefresh} />
+                                <p>Załaduj więcej</p>
+                            </button>
                         </div>
                     </div>
                 </div>
