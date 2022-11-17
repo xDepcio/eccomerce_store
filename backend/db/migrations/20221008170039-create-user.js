@@ -8,10 +8,23 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
+      // username: {
+      //   type: Sequelize.STRING(30),
+      //   allowNull: false,
+      //   unique: true
+      // },
+      defaultAddressId: {
+        type: Sequelize.INTEGER,
+      },
+      firstName: {
         type: Sequelize.STRING(30),
         allowNull: false,
-        unique: true
+        defaultValue: 'Aleksander'
+      },
+      lastName: {
+        type: Sequelize.STRING(40),
+        allowNull: false,
+        defaultValue: 'Drwal'
       },
       email: {
         type: Sequelize.STRING(256),

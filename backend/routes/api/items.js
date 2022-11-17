@@ -1,6 +1,9 @@
 const express = require('express')
-const {Item, FinalCategory, SubCategory, MainCategory, ItemSpec, Review, sequelize} = require('../../db/models')
+const {Item, FinalCategory, SubCategory, MainCategory, UserVoteReview, ItemSpec, Review, sequelize} = require('../../db/models')
 const asyncHandler = require('express-async-handler')
+const { requireAuth } = require('../../utils/auth')
+const { Op } = require('sequelize')
+const valdiatePostReview = require('../../utils/validate/validatePostReview')
 
 const router = express.Router()
 
@@ -165,7 +168,8 @@ router.get('/all/:itemId/reviews', asyncHandler(async (req, res) => {
         include: {
             model: Review,
             order: order,
-            limit: 10,
+            limit: res.locals.query.limit,
+            offset: res.locals.query.offset
         },
     })
 
@@ -175,16 +179,89 @@ router.get('/all/:itemId/reviews', asyncHandler(async (req, res) => {
 }))
 
 // Post item review rating
-router.post('/all/:itemId/reviews/:reviewId', asyncHandler(async (req, res) => {
-    const review = await Review.findByPk(req.params.reviewId)
+router.post('/all/reviews/:reviewId/rating', requireAuth, asyncHandler(async (req, res) => {
+    const voteValue = Math.sign(req.body.ratingValue)
 
-    review.reviewRating = review.reviewRating + Math.sign(req.body.ratingValue) // ratingValue is +1 or -1
-    Math.sign(req.body.ratingValue) === 1 ? review.thumbsUp += 1 : review.thumbsDown += 1
+    const review = await Review.findByPk(req.params.reviewId)
+console.log('1=======================')
+    const userFoundReviewVote = await UserVoteReview.findOne({
+        where: {
+            [Op.and]: {
+                userId: req.user.id,
+                reviewId: review.id
+            }
+        },
+    })
+    console.log('2=======================')
+
+    if(userFoundReviewVote) {
+        if(userFoundReviewVote.voteValue === voteValue) {
+            console.log('userFoundReviewVote', userFoundReviewVote)
+            await UserVoteReview.destroy({
+                where: {
+                    [Op.and]: {
+                        userId: req.user.id,
+                        reviewId: review.id
+                    }
+                }
+            })
+
+            review.reviewRating -= voteValue
+            voteValue === 1 ? review.thumbsUp -= 1 : review.thumbsDown -= 1
+        }
+        else {
+            userFoundReviewVote.voteValue = voteValue
+            review.reviewRating = review.reviewRating + voteValue*2
+            voteValue === 1 ? review.thumbsDown -= 1 : review.thumbsUp -= 1
+            voteValue === 1 ? review.thumbsUp += 1 : review.thumbsDown += 1
+            console.log('+++++++++++++++++++')
+            console.log({...userFoundReviewVote.dataValues})
+            // await userFoundReviewVote.save()
+            // console.log()
+            await UserVoteReview.destroy({
+                where: {
+                    [Op.and]: {
+                        userId: req.user.id,
+                        reviewId: review.id
+                    }
+                }
+            })
+            await UserVoteReview.create({...userFoundReviewVote.dataValues})
+        }
+    }
+    else {
+        await UserVoteReview.create({
+            userId: req.user.id,
+            reviewId: review.id,
+            voteValue: voteValue
+        })
+
+        review.reviewRating += voteValue
+        voteValue === 1 ? review.thumbsUp += 1 : review.thumbsDown += 1
+    }
+    console.log('3=======================')
+    // review.reviewRating = review.reviewRating + voteValue // ratingValue is +1 or -1
+    // voteValue === 1 ? review.thumbsUp += 1 : review.thumbsDown += 1
 
     await review.save()
+
     res.json(review)
 }))
 
+// Post item review
+router.post('/:itemId/reviews', requireAuth, valdiatePostReview, asyncHandler(async (req, res) => {
+    console.log(req.body)
+
+    const newReview = await Review.create({
+        reviewerFirstName: req.user.firstName,
+        reviewContent: req.body.submittedReviewDesc,
+        reviewerId: req.user.id,
+        itemId: req.params.itemId,
+        rating: req.body.submittedRating
+    })
+
+    res.json(newReview)
+}))
 
 
 module.exports = router

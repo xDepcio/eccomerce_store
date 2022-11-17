@@ -1,5 +1,7 @@
 'use strict';
 
+const {Review, User, UserVoteReview} = require('../models');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -12,43 +14,55 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Reviews', [
+
+    const reviews =  [
       {
         reviewerFirstName: 'Aleksander',
-        reviewContent: 'Bardzo dobra karta nie mam nic dodać nic ująć nawet się nie grzeje za bardzo',
+        reviewContent: 'Review item6 Aleksander',
         reviewerId: 1,
         itemId: 6,
         rating: 5
       },
       {
         reviewerFirstName: 'Mateusz',
-        reviewContent: 'Bardzo dobra karta nie mam nic dodać nic ująć nawet się nie grzeje za bardzo',
-        reviewerId: 1,
+        reviewContent: 'Review item6 Mateusz',
+        reviewerId: 2,
         itemId: 6,
         rating: 3
       },
       {
         reviewerFirstName: 'Janusz',
-        reviewContent: 'Bardzo dobra karta nie mam nic dodać nic ująć nawet się nie grzeje za bardzo',
-        reviewerId: 1,
+        reviewContent: 'Review item6 Janusz',
+        reviewerId: 3,
         itemId: 6,
         rating: 4
       },
       {
         reviewerFirstName: 'Norbert',
-        reviewContent: 'Norbert lubić karte',
-        reviewerId: 1,
-        itemId: 6,
+        reviewContent: 'Review item6 Norbert',
+        reviewerId: 4,
+        itemId: 7,
         rating: 2
       },
       {
         reviewerFirstName: 'Tomasz',
-        reviewContent: 'Bardzo dobra karta nie mam nic dodać nic ująć nawet się nie grzeje za bardzo',
-        reviewerId: 1,
-        itemId: 6,
+        reviewContent: 'Review item6 Tomasz',
+        reviewerId: 5,
+        itemId: 7,
         rating: 1
       }
-    ])
+    ]
+
+    for(let i = 0; i < reviews.length; i++) {
+      const review = await Review.create(reviews[i])
+      await UserVoteReview.create({
+        userId: Math.floor(Math.random() * 3) + 1,
+        reviewId: review.id,
+        voteValue: Math.sign(Math.random() - 0.5)
+      })
+    }
+
+    // await queryInterface.bulkInsert('Reviews',)
   },
 
   async down (queryInterface, Sequelize) {

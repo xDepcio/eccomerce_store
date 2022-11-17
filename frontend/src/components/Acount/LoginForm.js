@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import './LoginForm.css'
 import {useNavigate} from 'react-router-dom'
 import {useDispatch, useSelector} from 'react-redux'
-import {loginUser} from '../../store/session'
+import {loginUser, postNewUser} from '../../store/session'
+import { csrfFetch } from '../../store/csrf'
 
 function LoginForm() {
     const navigate = useNavigate()
@@ -12,6 +13,8 @@ function LoginForm() {
     const [loginAction, setLoginAction] = useState('login')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
 
     const handleLoginSubmit = (e) => {
         e.preventDefault()
@@ -28,11 +31,24 @@ function LoginForm() {
         ).catch((err) => console.log(err))
     }
 
+    const handleRegisterSubmit = (e) => {
+        e.preventDefault()
+
+        const payload = {
+            firstName,
+            lastName,
+            email,
+            password
+        }
+
+        dispatch(postNewUser(payload))
+    }
+
     useEffect(() => {
         if(user) {
             navigate('/account')
         }
-    }, [])
+    }, [user])
 
     return (
         <div className='login-outer-wrapper'>
@@ -52,16 +68,16 @@ function LoginForm() {
                 </div>
                 <div className='credentials-wrapper'>
                     {loginAction === 'register' && (
-                        <form>
+                        <form onSubmit={handleRegisterSubmit}>
                             <div className='personal-details'>
-                                <input className='firstname' placeholder='Imie'></input>
-                                <input className='lastname' placeholder='Nazwisko'></input>
+                                <input className='firstname' onChange={(e) => setFirstName(e.currentTarget.value)} value={firstName} placeholder='Imie'></input>
+                                <input className='lastname' onChange={(e) => setLastName(e.currentTarget.value)} value={lastName} placeholder='Nazwisko'></input>
                             </div>
                             <label className='email-label'>
-                                <input className='email' placeholder='Email'></input>
+                                <input className='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder='Email'></input>
                             </label>
                             <label className='password-label'>
-                                <input className='password' placeholder='Hasło'></input>
+                                <input className='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder='Hasło'></input>
                             </label>
                             <label className='repeat-password-label'>
                                 <input className='repeat-password' placeholder='Powtórz hasło'></input>

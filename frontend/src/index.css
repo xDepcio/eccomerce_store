@@ -19,3 +19,16 @@ button {
 li {
   list-style-type: none;
 }
+
+/* #root {
+  background-color: #ebeaea;
+} */
+
+/* @keyframes fade-background {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(0.75);
+  }
+} */

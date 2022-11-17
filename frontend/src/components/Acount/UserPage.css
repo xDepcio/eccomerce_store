@@ -1,0 +1,206 @@
+.user-profile-wrapper {
+    width: 60vw;
+    margin: 0 auto;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 13px -8px rgb(66 68 90);
+}
+
+.user-prifle-header {
+    border-bottom: 1px solid rgb(222, 222, 222);
+    padding: 10px;
+    color: rgb(51, 51, 51);
+}
+
+.user-profile-main {
+    display: grid;
+    grid-template-columns: 20% auto;
+    margin-top: 15px;
+    /* background-color: white; */
+    color: rgb(77, 77, 77);
+    height: 100%;
+}
+
+.user-profile-menus {
+    border-right: 1px solid rgb(222, 222, 222);
+    min-height: 600px;
+}
+
+.user-profile-menus > li {
+    display: flex;
+    align-items: center;
+    padding: 25px 15px;
+    /* margin-left: 5px; */
+    font-size: 17px;
+    cursor: pointer;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.user-profile-menus > li:hover {
+    background-color: rgb(222, 222, 222);
+}
+
+.user-profile-menus > li > p {
+    margin-left: 5px;
+}
+
+.user-profile-menu-expanded {
+    padding: 10px;
+}
+
+.addresses-field {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* single addres styles */
+.single-addres {
+    border: 2px solid rgb(123, 123, 123);
+    /* max-width: 40%; */
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.single-addres > div > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 5px 0;
+}
+
+.single-addres > div {
+    margin: 10px 0px;
+    border-bottom: 1px solid rgb(222, 222, 222);
+}
+
+.single-addres > div:first-child {
+    margin-top: 0;
+}
+
+.single-addres > div:nth-child(3) {
+    margin-bottom: 0;
+    border-bottom: unset;
+}
+
+.single-addres > div:nth-child(5) {
+    margin-bottom: 0;
+    border-bottom: unset;
+    margin-top: auto;
+}
+
+.single-addres > div > p {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.optional-sign-desc {
+    align-self: flex-start;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.addres-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.addres-buttons > button {
+    border: none;
+    background-color: rgb(62, 162, 255);
+    padding: 5px;
+    color: white;
+    font-weight: 600;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    border: 2px solid rgb(62, 162, 255);
+    cursor: pointer;
+}
+
+.addres-buttons > button:hover {
+    background-color: rgb(44, 136, 221);
+    border: 2px solid rgb(44, 136, 221);
+}
+
+.addres-buttons > .default-addres {
+    background-color: white;
+    color: rgb(62, 162, 255);
+    border: 2px solid rgb(62, 162, 255);
+    cursor: unset;
+}
+
+.addres-buttons > .default-addres:hover {
+    background-color: white;
+    border: 2px solid rgb(62, 162, 255);
+}
+
+.single-addres.single-addres-default {
+    border: 2px solid rgb(62, 162, 255);
+    box-shadow: inset 0px 0px 0px 1px rgb(62, 162, 255);
+
+}
+
+.grid-loader > div {
+    height: 80%;
+    /* width: 100%; */
+}
+
+.add-new-address-button {
+    border: 3px solid rgb(62, 162, 255);
+    background-color: rgb(62, 162, 255);
+    color: white;
+    padding: 5px 15px;
+    font-weight: 500;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.add-new-address-button:hover {
+    background-color: rgb(44, 136, 221);
+    border: 3px solid rgb(44, 136, 221);
+}
+
+.single-addres input {
+    border-radius: 4px;
+    border: 1px solid rgb(167, 167, 167);
+    padding: 0 5px;
+}
+
+.single-addres input:focus {
+    outline: none;
+}
+
+.addres-buttons > button.confirm-new-address {
+    background-color: rgb(72, 164, 63);
+    border: 3px solid rgb(72, 164, 63);
+    transition-duration: 0.2s;
+}
+
+.addres-buttons > button.confirm-new-address:hover {
+    background-color: rgb(52, 140, 44);
+    border: 3px solid rgb(52, 140, 44);
+}
+
+.addres-buttons > button.decline-new-address {
+    background-color: rgb(255, 88, 88);
+    border: 3px solid rgb(255, 88, 88);
+    transition-duration: 0.2s;
+}
+
+.addres-buttons > button.decline-new-address:hover {
+    background-color: rgb(217, 73, 73);
+    border: 3px solid rgb(217, 73, 73);
+}

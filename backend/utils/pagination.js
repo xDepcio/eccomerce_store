@@ -2,18 +2,17 @@ const express = require('express');
 const router = express.Router();
 
 router.use((req, res, next) => {
+    const defaultPageValue = 1
+    const defaultSizeValue = 10
+
     let query = {}
 
-    const page = req.query.page === undefined ? 1 : parseInt(req.query.page)
-    const size = req.query.size === undefined ? 10 : parseInt(req.query.size)
+    let page = req.query.page === undefined ? 1 : parseInt(req.query.page)
+    let size = req.query.size === undefined ? 10 : parseInt(req.query.size)
     // const size = 10
 
-    if(isNaN(page) || isNaN(size)) {
-        errorResult.errors.push({
-            message: 'Requires valid page and size params'
-        })
-        next(errorResult)
-    }
+    if(isNaN(page)) page = defaultPageValue
+    if(isNaN(size)) size = defaultSizeValue
 
     if(size <= 0) {
         query.limit = 10

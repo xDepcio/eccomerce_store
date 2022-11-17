@@ -20,14 +20,14 @@ if (!isProduction) {
     // enable cors only in development
     app.use(cors());
 }
-  
+
 // helmet helps set a variety of headers to better secure your app
 app.use(
-    helmet.crossOriginResourcePolicy({ 
-        policy: "cross-origin" 
+    helmet.crossOriginResourcePolicy({
+        policy: "cross-origin"
     })
 );
-  
+
 // Set the _csrf token and create req.csrfToken method
 app.use(
     csurf({
@@ -68,6 +68,7 @@ app.use((err, _req, _res, next) => {
 app.use((err, _req, res, _next) => {
     res.status(err.status || 500);
     console.error(err);
+    console.log('IS IN ERROR ROUTE')
     res.json({
       title: err.title || 'Server Error',
       message: err.message,
@@ -75,6 +76,6 @@ app.use((err, _req, res, _next) => {
       stack: isProduction ? null : err.stack
     });
 });
-  
+
 
 module.exports = app;

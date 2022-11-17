@@ -5,6 +5,9 @@ const LOAD_CATEGORIES = 'shop/loadCategories'
 const LOAD_ITEMS = 'shop/loadItems'
 const LOAD_SINGLE_ITEM = 'shop/loadSingleItem'
 const LOAD_ITEM_REVIEWS = 'shop/loadItemReviews'
+const LOAD_USER_REVIEWS_VOTES = 'shop/loadUserReviewsVotes'
+const UPDATE_USER_REVIEW_VOTE = 'shop/updateUserReviewVote'
+const LOAD_USER_ITEM_REVIEW = 'shop/loadUseritemReview'
 
 // Normal action creator
 
@@ -29,10 +32,32 @@ const loadSingleItem = (item) => {
     }
 }
 
-const loadItemReviews = (reviews) => {
+const loadItemReviews = (reviews, page) => {
     return {
         type: LOAD_ITEM_REVIEWS,
+        reviews,
+        page
+    }
+}
+
+const loadUserReviewsVotes = (reviews) => {
+    return {
+        type: LOAD_USER_REVIEWS_VOTES,
         reviews
+    }
+}
+
+const updateUserReviewVote = (review) => {
+    return {
+        type: UPDATE_USER_REVIEW_VOTE,
+        review
+    }
+}
+
+const loadUserItemReview = (review) => {
+    return {
+        type: LOAD_USER_ITEM_REVIEW,
+        review
     }
 }
 
@@ -71,19 +96,73 @@ export const getSingleItem = (itemId) => async (dispatch) => {
     }
 }
 
-export const getItemReviews = (itemId, sortBy) => async (dispatch) => {
-    const response = await csrfFetch(`/api/items/all/${itemId}/reviews?sortBy=${sortBy}`)
+export const getItemReviews = (itemId, sortBy, page) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/all/${itemId}/reviews?sortBy=${sortBy}&page=${page}&size=${2}`)
 
     if(response.ok) {
         const data = await response.json()
         // console.log(data)
-        dispatch(loadItemReviews(data))
+        dispatch(loadItemReviews(data, page))
         return response
     }
 }
 
+export const getUserReviewsVotes = (userId, itemId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/users/${userId}/reviews/${itemId}`)
+
+    if(response.ok) {
+        const data = await response.json()
+        // console.log(data)
+        dispatch(loadUserReviewsVotes(data))
+        return response
+    }
+}
+
+export const sendUserReviewVote = (reviewId, voteValue) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/all/reviews/${reviewId}/rating`, {
+        method: 'POST',
+        body: JSON.stringify({
+            ratingValue: voteValue
+        })
+    })
+
+    if(response.ok) {
+        const review = await response.json()
+        dispatch(getItemReviews(review.itemId))
+        dispatch(getUserReviewsVotes(undefined, review.itemId))
+    }
+}
+
+export const sendItemReview = (itemId, submittedRating, submittedReviewDesc) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/${itemId}/reviews`, {
+        method: 'POST',
+        body: JSON.stringify({
+            submittedRating,
+            submittedReviewDesc
+        })
+    })
+
+    if(response.ok) {
+        const data = await response.json()
+        console.log('DATATATA', data)
+        return response
+    }
+}
+
+export const getUserItemReview = (itemId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/users/reviews/${itemId}`)
+
+    if(response.ok) {
+        const review = await response.json()
+        // console.log('DATATATA', data)
+        dispatch(loadUserItemReview(review))
+    }
+}
+
+
+
 // state object
-const initialState = {categories: null};
+const initialState = {categories: null, reviews: []};
 
 // Reducer
 const shopReducer = (state = initialState, action) => {
@@ -118,7 +197,22 @@ const shopReducer = (state = initialState, action) => {
         }
         case LOAD_ITEM_REVIEWS: {
             const newState = {...state}
-            newState.reviews = action.reviews
+            console.log(action)
+            newState.reviews = [...newState.reviews.slice(0, 2*(action.page-1)), ...action.reviews]
+            return newState
+        }
+        case LOAD_USER_REVIEWS_VOTES: {
+            const newState = {...state}
+            let userReviewsVotes = {}
+            action.reviews.forEach((e, i) => {
+                userReviewsVotes[e.id] = e
+            })
+            newState.userReviewsVotes = userReviewsVotes
+            return newState
+        }
+        case LOAD_USER_ITEM_REVIEW: {
+            const newState = {...state}
+            newState.userItemReview = action.review
             return newState
         }
         default: {

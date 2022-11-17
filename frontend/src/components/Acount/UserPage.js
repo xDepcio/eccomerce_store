@@ -1,21 +1,94 @@
-import { useEffect } from "react"
-import { useSelector } from "react-redux"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+import './UserPage.css'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import { faBook, faCheck, faExternalLink, faPen, faPowerOff } from '@fortawesome/free-solid-svg-icons'
+import { getAllUserAddresses, getDefaultUserAddress, logoutUser } from "../../store/session"
+import Addresses from "./AccountMenus/Addresses"
+import Security from "./AccountMenus/Security"
+
 
 function UserPage() {
     const navigate = useNavigate()
     const user = useSelector((state) => state.session.user)
+    const userAllAddresses = useSelector((state) => state.session.user?.addresses)
+    const userDefaultAddress = useSelector((state) => state.session.user?.defaultAddress)
+
+    const dispatch = useDispatch()
+
+    const [selectedMenu, setSelectedMenu] = useState('address')
+    const [selectedMenuComponent, setSelectedMenuComponent] = useState(<Addresses />)
 
     useEffect(() => {
         if(!user) {
             navigate('/login')
         }
-    }, [])
+
+        dispatch(getAllUserAddresses())
+        dispatch(getDefaultUserAddress())
+    }, [user])
+
+    useEffect(() => {
+        switch(selectedMenu) {
+            case 'address': {
+                setSelectedMenuComponent(<Addresses />)
+                break
+            }
+            case 'security': {
+                setSelectedMenuComponent(<Security />)
+                break
+            }
+        }
+    }, [selectedMenu])
+
+    const handleLogout = () => {
+        dispatch(logoutUser())
+    }
 
     return (
         <>
         {user && (
-            <div>{user.username}</div>
+            <div className="user-profile-wrapper">
+                <h2 className="user-prifle-header">Cześć {user.firstName} :)</h2>
+                <div className="user-profile-main">
+                    <ul className="user-profile-menus">
+                        <li style={{backgroundColor: selectedMenu === 'defaultData' ? 'rgb(222, 222, 222)' : ''}}
+                        onClick={() => setSelectedMenu('defaultData')}>
+                            <FontAwesomeIcon icon={faBook} />
+                            <p>Podstawowe Dane</p>
+                        </li>
+                        <li style={{backgroundColor: selectedMenu === 'address' ? 'rgb(222, 222, 222)' : ''}}
+                        onClick={() => setSelectedMenu('address')}>
+                            <FontAwesomeIcon icon={faBook} />
+                            <p>Dane adresowe</p>
+                        </li>
+                        <li style={{backgroundColor: selectedMenu === 'orders' ? 'rgb(222, 222, 222)' : ''}}
+                        onClick={() => setSelectedMenu('orders')}>
+                            <FontAwesomeIcon icon={faBook} />
+                            <p>Zamówienia</p>
+                        </li>
+                        <li style={{backgroundColor: selectedMenu === 'reviews' ? 'rgb(222, 222, 222)' : ''}}
+                        onClick={() => setSelectedMenu('reviews')}>
+                            <FontAwesomeIcon icon={faBook} />
+                            <p>Opinie</p>
+                        </li>
+                        <li style={{backgroundColor: selectedMenu === 'security' ? 'rgb(222, 222, 222)' : ''}}
+                        onClick={() => setSelectedMenu('security')}>
+                            <FontAwesomeIcon icon={faBook} />
+                            <p>Bezpieczeństwo</p>
+                        </li>
+                        <li style={{color: '#cb2e2e'}}
+                        onClick={handleLogout}>
+                            <FontAwesomeIcon icon={faPowerOff} />
+                            <p>Wyloguj się</p>
+                        </li>
+                    </ul>
+                    <div className="user-profile-menu-expanded">
+                        {selectedMenuComponent}
+                    </div>
+                </div>
+            </div>
         )}
         </>
     )

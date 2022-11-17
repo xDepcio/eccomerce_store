@@ -1,0 +1,194 @@
+.user-security {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    box-sizing: border-box;
+    padding: 20px 0px;
+}
+
+.field-wrapper {
+    justify-self: center;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 65%;
+    min-width: 215px;
+    padding: 0 10px;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-security > div > div input {
+    border: none;
+    height: 100%;
+    width: 100%;
+    font-size: 15px;
+}
+
+.field-wrapper > h3 {
+    width: 100%;
+}
+
+.field-wrapper > button {
+    width: 100%;
+    border: none;
+    background-color: rgb(62, 162, 255);
+    color: white;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.field-wrapper > button:hover {
+    background-color: rgb(44, 136, 221);
+}
+
+.user-security > div > div > p {
+    width: 100%;
+    box-sizing: border-box;
+    height: 27px;
+    padding: 3px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F8F8F8;
+    border: 1px solid rgba(118, 118, 118, 0.3);
+    border-radius: 3px;
+}
+
+.email-field-user {
+    /* width: 100%; */
+    border-right: 1px solid rgb(222, 222, 222)
+}
+
+.user-security-email-icon, .user-security-password-icon {
+    position: relative;
+    right: 4px;
+    font-size: 18px;
+}
+
+.user-security > div {
+    display: flex;
+    justify-content: center;
+}
+
+.change-email-ele {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    /* background-color: red; */
+    background-color: rgba(0, 0, 0, 0.17);
+    z-index: 2;
+}
+
+.change-email-main {
+    width: 30%;
+    height: 350px;
+    background-color: white;
+    position: fixed;
+    top: 250px;
+    border: 1px solid rgb(186, 186, 186);
+    border-radius: 10px;
+    box-shadow: 0px 0px 12px -8px rgb(66 68 90);
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.change-email-content-wrapper > p, .new-email-field {
+    width: 100%;
+    box-sizing: border-box;
+    height: 27px;
+    padding: 1px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid rgb(118, 118, 118);
+    border-radius: 3px;
+    max-width: 232px;
+    height: 32px;
+}
+
+.change-email-content-wrapper > p:first-child {
+    margin-bottom: 10px;
+}
+
+.change-email-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.change-email-content-wrapper > h3 {
+    text-align: center;
+    width: 100%;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border-bottom: 1px solid rgb(222, 222, 222);
+}
+
+.change-email-content-wrapper > p > input, .new-email-field > input {
+    border: none;
+    height: 100%;
+    width: 100%;
+    font-size: 15px;
+}
+
+.change-email-content-wrapper > p > input:focus, .new-email-field > input:focus {
+    outline: none;
+}
+
+.new-email-field-wrapper {
+    margin-top: 20px;
+    padding-top: 20px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-top: 1px solid rgb(222, 222, 222);
+}
+
+.email-field-change-old {
+    margin-bottom: 5px;
+}
+
+.change-email-button-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 232px;
+    margin-top: 10px;
+    gap: 10px;
+
+}
+
+.change-email-button-wrapper > button {
+    width: 100%;
+    border: none;
+    background-color: rgb(62, 162, 255);
+    color: white;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    height: 32px;
+    transition-duration: 0.2s;
+}
+
+.change-email-button-wrapper > button:first-child {
+    background-color: rgb(255, 88, 88);
+}
+
+.change-email-button-wrapper > button:first-child:hover {
+    background-color: rgb(217, 73, 73);
+}
+
+.change-email-button-wrapper > button:hover {
+    background-color: rgb(44, 136, 221);
+}
