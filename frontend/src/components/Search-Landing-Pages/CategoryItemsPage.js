@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { getCategories, getCategoryItems } from "../../store/shop"
+import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath } from "../../store/shop"
 import { toValidUrl, urlToCategoryName } from "../../utils"
 import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
 import {faStar, faStarHalf} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import GraphicsCardFilter from "./CategoriesFilters/GraphcisCardFilter"
 
 function CategoryItemsPage() {
     const searchedItems = useSelector((state) => {
@@ -22,9 +23,12 @@ function CategoryItemsPage() {
 
     const [minPrice, setMinPrice] = useState(0)
     const [maxPrice, setMaxPrice] = useState(100)
+    const [loadMode, setLoadMode] = useState(false)
 
     useEffect(() => {
-        const items = dispatch(getCategoryItems(urlToCategoryName(finalCategoryName), {}))
+        // const items = dispatch(getCategoryItems(urlToCategoryName(finalCategoryName), {}))
+        const path = dispatch(getFinalCategoryPath(urlToCategoryName(finalCategoryName)))
+        const items = dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName)))
     }, [])
 
     return (
@@ -52,7 +56,10 @@ function CategoryItemsPage() {
             </div>
             <div className="items-page-wrapper">
                 <div className="page-filter">
-
+                    <div className="page-filter-header">
+                        <p>Filtrowanie</p>
+                    </div>
+                    <GraphicsCardFilter setLoadMode={setLoadMode} />
                 </div>
                 <div className="page-sorter">
                     {/* <div className="sort-selector"> */}
@@ -101,17 +108,20 @@ function CategoryItemsPage() {
                     </div>
                 </div>
                 <div className="items-display">
+                    {(loadMode && false) && (
+                        <div className="half-ring items-overlay-laoder"></div>
+                    )}
                     {searchedItems?.map((e, i) => {
                         return (
-                            <div className="single-search-item-wrapper" key={i}>
+                            <div style={{filter: loadMode ? 'blur(6px)' : 'unset'}} className="single-search-item-wrapper" key={i}>
                                 <Link to={`/produkty/${e.id}`}>
                                     <div className="image-wrapper-in-buy">
-                                        <img src="https://images.morele.net/i1064/5948080_0_i1064.jpg" />
+                                        <img src={`https://images.morele.net/i1064/5948080_0_i1064.jpg`} />
                                     </div>
                                 </Link>
                                 <div className="text-area">
                                     <Link to={`/produkty/${e.id}`}>
-                                        <p className="in-buy-item-name">Karta graficzna Gigabyte GeForce RTX 3060 Eagle OC 12GB GDDR6 (GV-N3060EAGLE OC-12GD 2.0)</p>
+                                        <p className="in-buy-item-name">{e.name}</p>
                                     </Link>
                                     <div className="in-buy-item-reviews">
                                         <FontAwesomeIcon className="star-icon" icon={faStar} />
@@ -129,7 +139,7 @@ function CategoryItemsPage() {
                                     </ul>
                                 </div>
                                 <div className="buy-area">
-                                    <p className="price-header-in-buy">2499 zł</p>
+                                    <p className="price-header-in-buy">{e.price+1} zł</p>
                                     <button>Dodaj do koszyka</button>
                                 </div>
                             </div>

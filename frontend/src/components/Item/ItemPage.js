@@ -58,7 +58,7 @@ function ItemPage() {
 
     if(!item) {
         return (
-            <div>Kutas</div>
+            <div></div>
         )
     }
 

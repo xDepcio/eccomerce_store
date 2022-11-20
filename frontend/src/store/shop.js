@@ -8,6 +8,8 @@ const LOAD_ITEM_REVIEWS = 'shop/loadItemReviews'
 const LOAD_USER_REVIEWS_VOTES = 'shop/loadUserReviewsVotes'
 const UPDATE_USER_REVIEW_VOTE = 'shop/updateUserReviewVote'
 const LOAD_USER_ITEM_REVIEW = 'shop/loadUseritemReview'
+const LOAD_FILTERED_ITEMS = 'shop/loadFilteredItems'
+const LOAD_PATH = 'shop/loadPath'
 
 // Normal action creator
 
@@ -61,6 +63,20 @@ const loadUserItemReview = (review) => {
     }
 }
 
+const loadFilteredItems = (items) => {
+    return {
+        type: LOAD_FILTERED_ITEMS,
+        items
+    }
+}
+
+const loadPath = (path) => {
+    return {
+        type: LOAD_PATH,
+        path
+    }
+}
+
 // Thunk action creators
 export const getCategories = (type, parent) => async (dispatch) => {
     const response = await csrfFetch(`/api/items/categories/${type}/${parent}`)
@@ -72,15 +88,35 @@ export const getCategories = (type, parent) => async (dispatch) => {
     }
 }
 
-export const getCategoryItems = (finalCategoryName, searchParamsObj) => async (dispatch) => {
-    const response = await csrfFetch(`/api/items/${finalCategoryName}?` + new URLSearchParams({
-        ...searchParamsObj
-    }))
+export const getFinalCategoryPath = (finalCategoryName) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/${finalCategoryName}/path`)
 
     if(response.ok) {
-        const data = await response.json()
-        // console.log(data)
-        dispatch(loadItems(data))
+        const path = await response.json()
+        dispatch(loadPath(path))
+        return response
+    }
+}
+
+// export const getCategoryItems = (finalCategoryName, searchParamsObj) => async (dispatch) => {
+//     const response = await csrfFetch(`/api/items/${finalCategoryName}?` + new URLSearchParams({
+//         ...searchParamsObj
+//     }))
+
+//     if(response.ok) {
+//         const data = await response.json()
+//         // console.log(data)
+//         dispatch(loadItems(data))
+//         return response
+//     }
+// }
+
+export const getFilteredCategoryItems = (finalCategoryName, searchUrlStr='') => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/${finalCategoryName}?` + searchUrlStr)
+
+    if(response.ok) {
+        const items = await response.json()
+        dispatch(loadFilteredItems(items))
         return response
     }
 }
@@ -187,6 +223,11 @@ const shopReducer = (state = initialState, action) => {
 
             return newState
         }
+        case LOAD_PATH: {
+            const newState = {...state}
+            newState.path = action.path
+            return newState
+        }
         case LOAD_SINGLE_ITEM: {
             const newState = {...state}
             newState.item = action.item.ItemSpec
@@ -208,6 +249,17 @@ const shopReducer = (state = initialState, action) => {
                 userReviewsVotes[e.id] = e
             })
             newState.userReviewsVotes = userReviewsVotes
+            return newState
+        }
+        case LOAD_FILTERED_ITEMS: {
+            const newState = {...state}
+
+            let normalizedItems = {}
+            action.items.forEach((e) => {
+                normalizedItems[e.id] = e
+            })
+
+            newState.searchedItems = normalizedItems
             return newState
         }
         case LOAD_USER_ITEM_REVIEW: {

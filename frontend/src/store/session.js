@@ -150,11 +150,23 @@ export const postNewUser = (payload) => async (dispatch) => {
     }
 }
 
-export const changeCredentails = () => async (dispatch) => {
+export const changeCredentails = ({newEmail, newPassword, currentPassword, currentEmail}) => async (dispatch) => {
     const respone = await csrfFetch('/api/users', {
         method: 'PATCH',
-        body: ''
+        body: JSON.stringify({
+            newEmail,
+            newPassword,
+            currentPassword,
+            currentEmail
+        })
     })
+
+    if(respone.ok) {
+        const data = await respone.json()
+        console.log('DATA FRIN CHANGNE', data)
+        dispatch(loadUser(data))
+        return data
+    }
 }
 
 // state object

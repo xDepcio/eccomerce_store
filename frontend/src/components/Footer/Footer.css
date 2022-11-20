@@ -1,0 +1,98 @@
+.footer-wrapper {
+    /* background-color: red; */
+    width: 75vw;
+    /* height: 200px; */
+    color: rgb(77, 77, 77);
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+    margin-top: 150px;
+    /* margin-bottom: 200px; */
+    /* background-color: white; */
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+/*
+.footer-top-bg {
+    background-image: url('http://localhost:5000/images/footer-top-bg.svg');
+    width: 100%;
+    height: 84px;
+}
+
+.footer-content {
+    background-color: rgb(62, 162, 255);
+    width: 100%;
+    height: 300px;
+} */
+
+.footer-content {
+    /* border-top: 2px solid rgb(62, 162, 255); */
+    padding-top: 30px;
+    padding-bottom: 60px;
+    display: flex;
+    /* background-color: red; */
+    width: 90%;
+    justify-content: space-evenly;
+    /* background-color: white; */
+    /* border-radius: 10px; */
+    position: relative;
+}
+
+.footer-wrapper::before {
+    /* top: -60px; */
+    content: '';
+    width: 100%;
+    position: absolute;
+    border-radius: 999px;
+    height: 2px;
+    /* background-color: rgb(62, 162, 255); */
+    background-color: rgb(173, 173, 173);
+}
+
+.footer-section-header {
+    font-size: 17px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    color: rgb(50, 50, 50);
+}
+
+.footer-section-ul {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.footer-section-ul > li {
+    cursor: pointer;
+}
+
+.footer-section-ul > li:hover {
+    text-decoration: underline;
+}
+
+.footer-section-contact ul > li, .footer-section-socials ul > li {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+@media screen and (max-width: 690px){
+    .footer-wrapper {
+        width: 90%;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: auto auto;
+        /* place-items: center; */
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 310px){
+    .footer-content {
+        grid-template-columns: auto;
+    }
+}

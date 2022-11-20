@@ -1,5 +1,6 @@
 'use strict';
-const {FinalCategory} = require('../models')
+const {FinalCategory} = require('../models');
+const {CategoriesGraphicsAttributesItem} = require('../models');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -13,6 +14,21 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+    const choose = (array) => {
+      const min = 0
+      const max = array.length - 1
+      const randomInt = Math.floor(Math.random() * (max - min + 1) + min)
+      return array[randomInt]
+    }
+
+    const iRandomRange = (min, max) => {
+      return Math.floor(Math.random() * (max - min + 1) + min)
+    }
+
+    const producents = ['amd', 'nvidia', 'intel']
+    const memorySizes = [2, 4, 6, 8, 10, 16]
+    const graphicChips = ['nivida rtx 3070', 'nvidia rtx 3060', 'nvidia rtx 3060ti', 'nvidia rtx 3090', 'radeon rx 6700', 'radeon rx 6800']
+
     const items = [
       {
         name: 'Intel i5-11400f',
@@ -35,24 +51,35 @@ module.exports = {
         category: 'Procesory'
       },
       {
-        name: 'RTX 3060 ti',
-        category: 'Karty graficzne'
+        name: 'Gigabyte GeForce RTX 3060 EAGLE OC LHR 12GB GDDR6',
+        category: 'Karty graficzne',
+        producent: 'nvidia',
+        memorySize: 8,
+
       },
       {
         name: 'RTX 3070',
-        category: 'Karty graficzne'
+        category: 'Karty graficzne',
+        producent: choose(producents),
+        memorySize: choose(memorySizes)
       },
       {
         name: 'RTX 3080',
-        category: 'Karty graficzne'
+        category: 'Karty graficzne',
+        producent: choose(producents),
+        memorySize: choose(memorySizes)
       },
       {
         name: 'RX 6700 XT',
-        category: 'Karty graficzne'
+        category: 'Karty graficzne',
+        producent: choose(producents),
+        memorySize: choose(memorySizes)
       },
       {
         name: 'Nvidia Titan',
-        category: 'Karty graficzne'
+        category: 'Karty graficzne',
+        producent: choose(producents),
+        memorySize: choose(memorySizes)
       },
       {
         name: 'Bequiet Pure Dark Rock 4 PRO',
@@ -72,13 +99,23 @@ module.exports = {
       let item = items[i]
       let foundCategory = await FinalCategory.findOne({
         where: {
-          name: item.category
+          name: item.category,
         }
       })
       let createdItem = await foundCategory.createItem({
-        name: item.name
+        name: item.name,
+        price: iRandomRange(700, 3299)
       })
-      
+      console.log(CategoriesGraphicsAttributesItem)
+      if(item.category === 'Karty graficzne') {
+        await CategoriesGraphicsAttributesItem.create({
+          itemId: createdItem.id,
+          producent: ['nvidia', 'amd'][i % 2],
+          memorySize: [2, 4, 6, 8, 10, 16][i % 6],
+          graphicChip: ['geforce rtx 3060', 'geforce rtx 3070', 'radeon 6700', 'radeon 6700xt'][i % 4]
+        })
+      }
+
       await createdItem.createItemSpec({
         name: item.name,
         price: 2990,

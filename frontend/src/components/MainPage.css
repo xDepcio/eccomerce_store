@@ -5,7 +5,7 @@
     max-width: 86vw;
     margin: 0 auto;
     margin-top: 40px;
-    margin-bottom: 300px;
+    /* margin-bottom: 300px; */
     border-top: 2px solid rgb(62, 162, 255);
     padding-top: 40px;
     padding-left: 10px;
@@ -16,5 +16,6 @@
 @media screen and (max-width: 690px){
     .promo-and-reco-wrapper {
         grid-template-columns: auto;
+        gap: 50px;
     }
 }

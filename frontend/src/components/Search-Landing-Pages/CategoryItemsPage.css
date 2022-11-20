@@ -1,17 +1,19 @@
 .items-page-wrapper {
     display: grid;
     /* background-color: red; */
-    height: 900px;
+    /* height: 900px; */
     width: 100%;
     margin: 0 auto;
-    grid-template-columns: 240px auto;
+    grid-template-columns: 300px auto;
     grid-template-rows: max-content auto;
     grid-template-areas:
     "filter sorter"
     "filter main";
     margin-top: 30px;
-    margin-bottom: 600px;
+    /* margin-bottom: 600px; */
+    grid-template-rows: 60px auto;
     gap: 20px;
+    color: rgb(77, 77, 77);
 }
 
 .items-page-outer-wrapper {
@@ -19,10 +21,28 @@
     margin: 0 auto;
 }
 
+.page-filter-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(27, 27, 27);
+}
+
+.page-filter-header > p {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 0;
+    text-align: center;
+    border-bottom: 1px solid rgb(173, 173, 173);
+}
+
 .page-filter {
     background-color: white;
     grid-area: filter;
     border-radius: 15px;
+    padding: 10px;
 }
 
 .page-sorter {
@@ -32,8 +52,16 @@
 }
 
 .items-display {
+    position: relative;
     grid-area: main;
     /* background-color: orange; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.items-display .single-search-item-wrapper:last-child {
+    margin-bottom: 0;
 }
 
 .page-sorter {
@@ -300,3 +328,36 @@
 .item-short-specs > li > span {
     font-weight: 500;
 }
+
+.items-overlay-laoder {
+    position: absolute;
+    scale: 2;
+    top: 200px;
+    z-index: 10;
+}
+
+@-webkit-keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg); } }
+
+  @keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg); } }
+
+  /**
+    * Half ring
+    *
+    * @author jh3y - jheytompkins.com
+  */
+  .half-ring:before {
+    -webkit-animation: spin 1s infinite linear;
+            animation: spin 1s infinite linear;
+    border-radius: 10px;
+    -webkit-box-shadow: 25px 0px 0 0 rgba(75, 168, 255, 0.2), 20.22542px 14.69463px 0 0 rgba(75, 168, 255, 0.4), 7.72542px 23.77641px 0 0 rgba(75, 168, 255, 0.6), -7.72542px 23.77641px 0 0 rgba(75, 168, 255, 0.8), -20.22542px 14.69463px 0 0 rgb(75, 168, 255);
+            box-shadow: 25px 0px 0 0 rgba(75, 168, 255, 0.2), 20.22542px 14.69463px 0 0 rgba(75, 168, 255, 0.4), 7.72542px 23.77641px 0 0 rgba(75, 168, 255, 0.6), -7.72542px 23.77641px 0 0 rgba(75, 168, 255, 0.8), -20.22542px 14.69463px 0 0 rgb(75, 168, 255);
+    height: 10px;
+    width: 10px;
+    display: block;
+    content: ''; }

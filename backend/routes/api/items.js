@@ -1,5 +1,5 @@
 const express = require('express')
-const {Item, FinalCategory, SubCategory, MainCategory, UserVoteReview, ItemSpec, Review, sequelize} = require('../../db/models')
+const {Item, FinalCategory, SubCategory, MainCategory, UserVoteReview, ItemSpec, CategoriesGraphicsAttributesItem, Review, sequelize} = require('../../db/models')
 const asyncHandler = require('express-async-handler')
 const { requireAuth } = require('../../utils/auth')
 const { Op } = require('sequelize')
@@ -68,19 +68,43 @@ router.get('/categories/:type/:parent', asyncHandler(async (req, res) => {
     })
 }))
 
-// Get items in final category
-router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
-    // console.log(res.locals.query.limit, res.locals.query.offset)
+// // Get items in final category
+// router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
+//     // console.log(res.locals.query.limit, res.locals.query.offset)
+//     const items = await FinalCategory.findOne({
+//         where: {
+//             name: req.params.finalCategoryName
+//         },
+//         include: [
+//             {
+//                 model: Item,
+//                 offset: res.locals.query.offset,
+//                 limit: res.locals.query.limit
+//             },
+//             {
+//                 model: SubCategory,
+//                 include: {
+//                     model: MainCategory
+//                 }
+//             }
+//         ]
+//     })
+//     const path = `Wszystkie kategorie/${items.dataValues.SubCategory.dataValues.MainCategory.name}/${items.dataValues.SubCategory.name}/${items.dataValues.name}`
+
+//     res.json({
+//         items: items?.Items,
+//         path
+//     })
+//     // res.json(items?.Items)
+// }))
+
+// Get current path
+router.get('/:finalCategoryName/path', asyncHandler(async (req, res) => {
     const items = await FinalCategory.findOne({
         where: {
             name: req.params.finalCategoryName
         },
         include: [
-            {
-                model: Item,
-                offset: res.locals.query.offset,
-                limit: res.locals.query.limit
-            },
             {
                 model: SubCategory,
                 include: {
@@ -91,11 +115,7 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     })
     const path = `Wszystkie kategorie/${items.dataValues.SubCategory.dataValues.MainCategory.name}/${items.dataValues.SubCategory.name}/${items.dataValues.name}`
 
-    res.json({
-        items: items?.Items,
-        path
-    })
-    // res.json(items?.Items)
+    res.json(path)
 }))
 
 // Get item specific data
@@ -138,7 +158,6 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
         path: `Wszystkie kategorie/${item.FinalCategory.SubCategory.MainCategory.name}/${item.FinalCategory.SubCategory.name}/${item.FinalCategory.name}/${item.ItemSpec.name}`
     })
 }))
-
 
 // Get item reviews
 router.get('/all/:itemId/reviews', asyncHandler(async (req, res) => {
@@ -261,6 +280,127 @@ router.post('/:itemId/reviews', requireAuth, valdiatePostReview, asyncHandler(as
     })
 
     res.json(newReview)
+}))
+
+// get items based on filter on attributes associated to ceratin category
+router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
+
+    Object.keys(req.query).map((e, i) => req.query[e] = req.query[e].split(','))
+    // console.log(req.query, '<- query')
+
+    // const payload = {...req.query}
+    // console.log(payload)
+
+    const formatFilterQuery = (payload) => {
+        const payloadKeys = Object.keys(payload)
+        const payloadValues = Object.values(payload)
+
+        const queryKeysToSkip = {
+            size: true,
+            page: true
+        }
+        const whereQuery = {}
+
+        for(let i = 0; i < payloadKeys.length; i++) {
+            let key = payloadKeys[i]
+
+            if(queryKeysToSkip[key]) {
+                continue
+            }
+            const filtersList = []
+
+            payloadValues[i].forEach((keyValue, j) => {
+                filtersList.push({[Op.like]: keyValue})
+            })
+
+            whereQuery[key] = {
+                [Op.or]: filtersList
+            }
+        }
+        // payloadKeys.forEach((key, i) => {
+        //     if(queryKeysToSkip[key]) {
+        //         continue
+        //     }
+        //     const filtersList = []
+
+        //     payloadValues[i].forEach((keyValue, j) => {
+        //         filtersList.push({[Op.like]: keyValue})
+        //     })
+
+        //     whereQuery[key] = {
+        //         [Op.or]: filtersList
+        //     }
+        // })
+
+        return whereQuery
+    }
+
+    const whereQuery = formatFilterQuery(req.query)
+    // console.log(req.query)
+    // console.log('whereQuery', whereQuery)
+
+    let model
+    // console.log(req.params.finalCategoryName, 'params')
+    switch (req.params.finalCategoryName) {
+        case 'Karty graficzne':
+            model = CategoriesGraphicsAttributesItem
+            console.log('model', model)
+            break;
+
+        default:
+            break;
+    }
+    // console.log(model, '330')
+
+    // model = CategoriesGraphicsAttributesItem
+    const items = await model.findAll({
+        include: {
+            model: Item,
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        },
+        attributes: {
+            exclude: ['createdAt', 'updatedAt', 'id', 'itemId']
+        },
+        // where: {
+        //     memorySize: {
+        //         [Op.or]: [
+        //             {[Op.like]: '2'},
+        //             {[Op.like]: 4},
+        //         ]
+        //     },
+        //     producent: {
+        //         [Op.or]: [
+        //             {[Op.like]: 'amd'},
+        //         ]
+        //     }
+        //     // graphicChip: {
+        //     //     [Op.or]: [
+        //     //         {[Op.like]: '%rtx 3060%'},
+        //     //         {[Op.like]: '%rtx 3070%'},
+        //     //     ]
+        //     // }
+        // }
+        where: whereQuery
+    })
+
+    // items.forEach((e) => {
+        // console.log(e.Item.dataValues)
+    // })
+    // console.log([...items.map((e) => e.Item.dataValues)])
+    // console.log(items)
+    res.json([...items.map((e) => {
+        let specs = {...e.dataValues}
+        delete specs.Item
+        let dataValues = {...e.Item.dataValues, specs: specs}
+        // console.log(specs)
+        // console.log(dataValues)
+        return dataValues
+        // {...e.Item.dataValues, specs: 't'}
+    })])
+    // res.json(items)
+    // res.json([...items.map((e) => e.Item.dataValues)])
 }))
 
 

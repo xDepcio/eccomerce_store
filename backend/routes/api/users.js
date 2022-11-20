@@ -2,8 +2,9 @@ const express = require('express')
 const asyncHandler = require('express-async-handler');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
+const bcrypt = require('bcryptjs');
 
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, requireAuth, verifyLoginUser } = require('../../utils/auth');
 const { User, Review, UserVoteReview, Address } = require('../../db/models');
 
 
@@ -149,6 +150,25 @@ router.post('/address', requireAuth, asyncHandler(async (req, res, next) => {
     }
 }))
 
+
+// Update user credentials
+router.patch('/', requireAuth, verifyLoginUser, asyncHandler(async (req, res) => {
+    const user = await User.scope('loginUser').findByPk(req.user.id)
+
+    console.log(req.body)
+    console.log(user)
+
+    if(req.body.newPassword) {
+        user.hashedPassword = bcrypt.hashSync(req.body.newPassword)
+    }
+    if(req.body.newEmail) {
+        user.email = req.body.newEmail
+    }
+
+    await user.save()
+    console.log(user)
+    return res.json(user)
+}))
 
 
 module.exports = router

@@ -12,6 +12,7 @@ import MainCategories from './components/Search-Landing-Pages/MainCategories';
 import { getCategories } from './store/shop';
 import CategoryItemsPage from './components/Search-Landing-Pages/CategoryItemsPage';
 import ItemPage from './components/Item/ItemPage';
+import Footer from './components/Footer/Footer';
 
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
       <Route exact path='/produkty/:itemId' element={<ItemPage />} />
 
     </Routes>
+    <Footer />
     </>
   );
 }
