@@ -1,13 +1,209 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Link, useLocation, useNavigate } from "react-router-dom"
-import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath } from "../../store/shop"
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
+import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
 import { toValidUrl, urlToCategoryName } from "../../utils"
 import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
-import {faStar, faStarHalf} from '@fortawesome/free-solid-svg-icons'
+import {faArrowsAlt, faArrowsSplitUpAndLeft, faArrowsUpDown, faClose, faGears, faSquareShareNodes, faStar, faStarHalf, faTh, faThLarge, faThList} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import GraphicsCardFilter from "./CategoriesFilters/GraphcisCardFilter"
+
+
+function FiltersSideDesktop({setLoadMode}) {
+    return (
+        <div className="page-filter">
+                <div className="page-filter-header">
+                    <p>Filtrowanie</p>
+                </div>
+            <GraphicsCardFilter setLoadMode={setLoadMode} />
+        </div>
+    )
+}
+
+function FiltersSideMobile({setLoadMode}) {
+
+    const handleExpandMobileFilters = (action) => {
+        const filtersEle = document.getElementById('mobile-filters')
+        const darkenerEle = document.getElementById('mobile-filters-darkener')
+
+        if(action === 'open') {
+            filtersEle.style.animation = `0.2s linear 0s 1 forwards open-filters-mobile normal`
+            darkenerEle.style.animation = `0.2s linear 0s 1 forwards darken-mobile normal`
+        }
+        else if(action === 'close') {
+            filtersEle.style.animation = `0.2s linear 0s 1 forwards close-filters-mobile normal`
+            darkenerEle.style.animation = `0.2s linear 0s 1 forwards darken-mobile-hide normal`
+        }
+    }
+
+    return (
+        <>
+            <>
+                <div id="mobile-filters" className="mobile-filters-expanded">
+                    <GraphicsCardFilter handleExpandMobileFilters={handleExpandMobileFilters} mobile={true} setLoadMode={setLoadMode} />
+                </div>
+                <div id="mobile-filters-darkener" onClick={() => handleExpandMobileFilters('close')} className="darken-mobile-filters"></div>
+            </>
+        <div onClick={() => handleExpandMobileFilters('open')} className="page-filter-mobile">
+            <div className="page-filter-header-mobile">
+                <p>Filtrowanie</p>
+                <FontAwesomeIcon icon={faThList} />
+            </div>
+        </div>
+        </>
+    )
+}
+
+function SortersSideDesktop({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
+
+    const [searchParams, setSearchParams] = useSearchParams()
+    const dispatch = useDispatch()
+    const pageNumber = useSelector((state) => state.shop.pageNumber)
+
+    return (
+        <div className="page-sorter">
+            <select onChange={(e) => {
+                dispatch(setQueryParam('sortBy', e.currentTarget.value))
+                // dispatch(setSortBy(e.currentTarget.value))
+
+            }}>
+                <option value={'popularity'}>Od najpopularniejszych</option>
+                <option value={'price-asc'}>Od najtańszych</option>
+                <option value={'price-desc'}>Od najdroższych</option>
+            </select>
+            <div className="price-range">
+                <div className="in-price-range-all-slider-wrapper">
+                    <p className="price-range-header">Cena:</p>
+                    <ReactSlider
+                        className="thermometer-slider"
+                        thumbClassName="thermometer-thumb"
+                        onChange={(val) => {
+                            setMinPrice(val[0])
+                            setMaxPrice(val[1])
+                        }}
+                        onAfterChange={(val) => {}}
+                        trackClassName="thermometer-track"
+                        defaultValue={[0, 100]}
+                        ariaLabel={['Lower thumb', 'Upper thumb']}
+                        ariaValuetext={state => `Thumb value ${state.valueNow}`}
+                        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                        pearling
+                        minDistance={1}
+                    />
+                </div>
+                <div className="range-value-info">
+                    <p className="price-from">{minPrice} zł</p>
+                    <p className="price-to">{maxPrice} zł</p>
+                </div>
+            </div>
+            <div className="page-nav">
+                <select onChange={(e) => dispatch(setQueryParam('size', e.currentTarget.value))} className="page-size-selector">
+                    <option value={'20'}>20</option>
+                    <option value={'40'}>40</option>
+                    <option value={'60'}>60</option>
+                </select>
+                <div className="page-selector">
+                    <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber - 1, 1)))} className="previous-page">{'<'}</div>
+                    <div className="current-page"><span>{pageNumber}</span></div>
+                    <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber + 1, 1)))}  className="next-page">{'>'}</div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
+
+    const dispatch = useDispatch()
+
+    const handleExpandMobileSorters = (action) => {
+        const sortersEle = document.getElementById('mobile-sorters')
+        const darkenerEle = document.getElementById('mobile-sorters-darkener')
+
+        console.log('ttttt')
+
+        if(action === 'open') {
+            sortersEle.style.animation = `0.2s linear 0s 1 forwards open-sorters-mobile normal`
+            darkenerEle.style.animation = `0.2s linear 0s 1 forwards darken-mobile normal`
+        }
+        else if(action === 'close') {
+            sortersEle.style.animation = `0.2s linear 0s 1 forwards close-sorters-mobile normal`
+            darkenerEle.style.animation = `0.2s linear 0s 1 forwards darken-mobile-hide normal`
+        }
+    }
+
+    return (
+        <>
+            <>
+                <div id="mobile-sorters" className="mobile-sorters-expanded">
+                    <div className="sorters-head-mobile-expand-wrapper">
+                        <div className="sorters-head-mobile-expand">
+                            <p>Sortowanie</p>
+                        </div>
+                        <FontAwesomeIcon onClick={() => handleExpandMobileSorters('close')} className='in-mobile-sorters-close' icon={faClose} />
+                    </div>
+                    <div>
+                        <div className="sorting-mobile-view">
+                            <div className="sorting-mobile-header">
+                                <FontAwesomeIcon icon={faArrowsUpDown} />
+                                <p>Sortuj:</p>
+                            </div>
+                            {/* <select className="sorting-mobile-select">
+                                <option value={'Wszystkie kategorie'}>Wszystkie kategorie</option>
+                                <option></option>
+                                <option></option>
+                            </select> */}
+                            <select className="sorting-mobile-select" onChange={(e) => dispatch(setQueryParam('sortBy', e.currentTarget.value))}>
+                                <option value={'popularity'}>Popularność</option>
+                                <option value={'price-asc'}>Od najtańszych</option>
+                                <option value={'price-desc'}>Od najdroższych</option>
+                            </select>
+                        </div>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '10px',
+                            height: 'unset'
+                        }} className="price-range">
+                            <p className="price-range-header">Cena:</p>
+                            <div style={{height: '24px'}} className="in-price-range-all-slider-wrapper">
+                                <ReactSlider
+                                    className="thermometer-slider thermometer-slider-mobile"
+                                    thumbClassName="thermometer-thumb"
+                                    onChange={(val) => {
+                                        setMinPrice(val[0])
+                                        setMaxPrice(val[1])
+                                    }}
+                                    onAfterChange={(val) => {}}
+                                    trackClassName="thermometer-track"
+                                    defaultValue={[0, 100]}
+                                    ariaLabel={['Lower thumb', 'Upper thumb']}
+                                    ariaValuetext={state => `Thumb value ${state.valueNow}`}
+                                    renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                                    pearling
+                                    minDistance={1}
+                                />
+                            </div>
+                            <div style={{position: 'relative'}} className="range-value-info">
+                                <p className="price-from">{minPrice} zł</p>
+                                <p className="price-to">{maxPrice} zł</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="mobile-sorters-darkener" onClick={() => handleExpandMobileSorters('close')} className="darken-mobile-filters"></div>
+            </>
+        <div onClick={() => handleExpandMobileSorters('open')} className="page-sorter-mobile">
+            <div className="page-sorter-header-mobile">
+                <p>Sortowanie</p>
+                <FontAwesomeIcon icon={faArrowsUpDown} />
+            </div>
+        </div>
+        </>
+    )
+}
+
 
 function CategoryItemsPage() {
     const searchedItems = useSelector((state) => {
@@ -17,6 +213,7 @@ function CategoryItemsPage() {
         return []
     })
     const path = useSelector((state) => state.shop.path)
+    const pageNumber = useSelector((state) => state.shop.pageNumber)
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
     const navigate = useNavigate()
@@ -24,11 +221,18 @@ function CategoryItemsPage() {
     const [minPrice, setMinPrice] = useState(0)
     const [maxPrice, setMaxPrice] = useState(100)
     const [loadMode, setLoadMode] = useState(false)
+    const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
 
     useEffect(() => {
-        // const items = dispatch(getCategoryItems(urlToCategoryName(finalCategoryName), {}))
+        const myInterval = setInterval(() => {
+            setViewportWidth(window.innerWidth)
+        }, 100)
+        return () => clearInterval(myInterval)
+    }, [])
+
+
+    useEffect(() => {
         const path = dispatch(getFinalCategoryPath(urlToCategoryName(finalCategoryName)))
-        const items = dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName)))
     }, [])
 
     return (
@@ -55,58 +259,19 @@ function CategoryItemsPage() {
                 </ul>
             </div>
             <div className="items-page-wrapper">
-                <div className="page-filter">
-                    <div className="page-filter-header">
-                        <p>Filtrowanie</p>
-                    </div>
-                    <GraphicsCardFilter setLoadMode={setLoadMode} />
-                </div>
-                <div className="page-sorter">
-                    {/* <div className="sort-selector"> */}
-                        <select>
-                            <option value={'Wszystkie kategorie'}>Wszystkie kategorie</option>
-                            <option></option>
-                            <option></option>
-                        </select>
-                    {/* </div> */}
-                    <div className="price-range">
-                        <div className="in-price-range-all-slider-wrapper">
-                            <p className="price-range-header">Cena:</p>
-                            <ReactSlider
-                                className="thermometer-slider"
-                                thumbClassName="thermometer-thumb"
-                                onChange={(val) => {
-                                    setMinPrice(val[0])
-                                    setMaxPrice(val[1])
-                                }}
-                                onAfterChange={(val) => {}}
-                                trackClassName="thermometer-track"
-                                defaultValue={[0, 100]}
-                                ariaLabel={['Lower thumb', 'Upper thumb']}
-                                ariaValuetext={state => `Thumb value ${state.valueNow}`}
-                                renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-                                pearling
-                                minDistance={1}
-                            />
-                        </div>
-                        <div className="range-value-info">
-                            <p className="price-from">{minPrice} zł</p>
-                            <p className="price-to">{maxPrice} zł</p>
-                        </div>
-                    </div>
-                    <div className="page-nav">
-                        <select className="page-size-selector">
-                            <option value={'Wszystkie kategorie'}>20</option>
-                            <option>40</option>
-                            <option>60</option>
-                        </select>
-                        <div className="page-selector">
-                            <div className="previous-page">{'< Poprzednia'}</div>
-                            <div className="current-page"><span>{1}</span></div>
-                            <div className="next-page">{'Następna >'}</div>
-                        </div>
-                    </div>
-                </div>
+                {viewportWidth > 1040 && (
+                    <FiltersSideDesktop setLoadMode={setLoadMode} />
+                )}
+                {viewportWidth <= 1040 && (
+                    <FiltersSideMobile setLoadMode={setLoadMode} />
+                )}
+
+                {viewportWidth > 1040 && (
+                    <SortersSideDesktop minPrice={minPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
+                )}
+                {viewportWidth <= 1040 && (
+                    <SortersSideMobile minPrice={minPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
+                )}
                 <div className="items-display">
                     {(loadMode && false) && (
                         <div className="half-ring items-overlay-laoder"></div>
@@ -116,7 +281,7 @@ function CategoryItemsPage() {
                             <div style={{filter: loadMode ? 'blur(6px)' : 'unset'}} className="single-search-item-wrapper" key={i}>
                                 <Link to={`/produkty/${e.id}`}>
                                     <div className="image-wrapper-in-buy">
-                                        <img src={`https://images.morele.net/i1064/5948080_0_i1064.jpg`} />
+                                        <img src={e.imagesUrl.split(' ')[0]} />
                                     </div>
                                 </Link>
                                 <div className="text-area">
@@ -146,6 +311,38 @@ function CategoryItemsPage() {
                         )
                     })}
                 </div>
+                {viewportWidth <= 1040 && (
+                    <div style={{gridRow: '2/3'}} className="nav-items-mobile">
+                        <div style={{justifyContent: 'space-between'}} className="page-nav">
+                            <select onChange={(e) => dispatch(setQueryParam('size', e.currentTarget.value))} className="page-size-selector">
+                                <option value={'20'}>20</option>
+                                <option value={'40'}>40</option>
+                                <option value={'60'}>60</option>
+                            </select>
+                            <div className="page-selector">
+                                <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber - 1, 1)))} className="previous-page">{'<'}</div>
+                                <div className="current-page"><span>{pageNumber}</span></div>
+                                <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber + 1, 1)))}  className="next-page">{'>'}</div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {viewportWidth <= 10040 && (
+                    <div style={{gridRow: '4/5'}} className="nav-items-mobile">
+                        <div style={{justifyContent: 'space-between'}} className="page-nav">
+                            <select onChange={(e) => dispatch(setQueryParam('size', e.currentTarget.value))} className="page-size-selector">
+                                <option value={'20'}>20</option>
+                                <option value={'40'}>40</option>
+                                <option value={'60'}>60</option>
+                            </select>
+                            <div className="page-selector">
+                                <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber - 1, 1)))} className="previous-page">{'<'}</div>
+                                <div className="current-page"><span>{pageNumber}</span></div>
+                                <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber + 1, 1)))}  className="next-page">{'>'}</div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
         </>

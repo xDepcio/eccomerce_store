@@ -20,8 +20,14 @@ module.exports = {
         allowNull: false,
         references: {model: 'FinalCategories'}
       },
-      mainImageUrl: {
-        type: Sequelize.STRING
+      imagesUrl: {
+        type: Sequelize.TEXT
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      specs: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,

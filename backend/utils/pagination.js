@@ -3,19 +3,19 @@ const router = express.Router();
 
 router.use((req, res, next) => {
     const defaultPageValue = 1
-    const defaultSizeValue = 10
+    const defaultSizeValue = 20
 
     let query = {}
 
     let page = req.query.page === undefined ? 1 : parseInt(req.query.page)
-    let size = req.query.size === undefined ? 10 : parseInt(req.query.size)
+    let size = req.query.size === undefined ? 20 : parseInt(req.query.size)
     // const size = 10
 
     if(isNaN(page)) page = defaultPageValue
     if(isNaN(size)) size = defaultSizeValue
 
     if(size <= 0) {
-        query.limit = 10
+        query.limit = 20
     }
     else {
         query.limit = size

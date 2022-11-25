@@ -65,7 +65,7 @@ router.get('/:userId/reviews/:itemId', requireAuth, asyncHandler(async (req, res
         attributes: []
     })
 
-    res.json(reviews.Reviews)
+    res.json(reviews? reviews.Reviews : [])
 }))
 
 

@@ -1,50 +1,83 @@
-import { faArrowAltCircleDown, faArrowCircleDown, faArrowDown, faArrowDown19, faArrowDown91, faArrowDownWideShort, faCaretDown, faCaretUp, faExpand, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowAltCircleDown, faArrowCircleDown, faArrowDown, faArrowDown19, faArrowDown91, faArrowDownWideShort, faCaretDown, faCaretUp, faClose, faExpand, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import './Filters.css'
 import { csrfFetch } from "../../../store/csrf"
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getCategoryItems, getFilteredCategoryItems } from '../../../store/shop'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 import { urlToCategoryName } from '../../../utils'
 
-function GraphicsCardFilter({setLoadMode}) {
+function GraphicsCardFilter({setLoadMode, mobile, handleExpandMobileFilters}) {
 
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
+    const [searchParams, setSearchParams] = useSearchParams()
+    const sortBy = useSelector((state) => state.shop.sortBy)
+    const pageSize = useSelector((state) => state.shop.pageSize)
+    const pageNumber = useSelector((state) => state.shop.pageNumber)
+    const queryParams = useSelector((state) => state.shop.queryParams)
 
     const [expandCategories, setExpandCategories] = useState({})
-    const [payload, setPaylaod] = useState({})
+    const [payload, setPaylaod] = useState((() => {
+        let myObj = {}
+        for(const [first, second] of new URLSearchParams(window.location.href.split('?')[1]).entries()) {
+            myObj[first] ? myObj[first][second] = true : myObj[first] = {[second]: true}
+        }
+        return {...myObj, ...sortBy}
+    })())
     const [expandedSubcategories, setExpandedSubcategories] = useState({})
 
     useEffect(() => {
+        // console.log('pAYLOAD', payload)
+        if(payload === undefined) {
+            return
+        }
         const formattedPayload = (async () => {
             const payloadKeys = Object.keys(payload)
             const payloadValues = Object.values(payload)
             const normalizedPayload = payloadKeys.map((e, i) => [e, Object.keys(payloadValues[i]).filter((e, j) => Object.values(payloadValues[i])[j] === true)])
-            console.log('normalizedPayload', normalizedPayload)
+            // console.log('normalizedPayload', normalizedPayload)
 
             const newPayload = {}
             for (const [key, value] of normalizedPayload) {
-                console.log(key, value)
+                // console.log(key, value)
                 if(value.length <= 0) {
                     continue
                 }
                 newPayload[key] = value
             }
+            // {memory: {1: true}}
 
-            // console.log(newPayload)
-            const paramsUrlStr = new URLSearchParams(newPayload).toString()
-            // console.log(paramsUrlStr)
+            // console.log(searchParams.toString())
+
+
+            console.log(newPayload)
+            const paramsUrl = new URLSearchParams({...newPayload, ...queryParams})
+            // paramsUrl.append('sortBy', sortBy)
+            // paramsUrl.append('size', pageSize)
+            // paramsUrl.append('page', pageNumber)
+            const paramsUrlStr = paramsUrl.toString()
+            // setSearchParams(newPayload)
+
+            // let myObj = {}
+            // for(const [first, second] of new URLSearchParams(window.location.href.split('?')[1]).entries()) {
+            //     myObj[first] ? myObj[first][second] = true : myObj[first] = {[second]: true}
+            // }
+
+            // console.log('myObj', myObj)
+
+            // console.log(new URLSearchParams(window.location.href.split('?')[1]).entries())
+            // console.log(new URLSearchParams(window.location.href.split('?')[1]))
+            console.log(paramsUrlStr)
 
             setLoadMode(true)
             await dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrlStr))
             setLoadMode(false)
             console.log('==============')
-            // csrfFetch('/api/items?' + paramsUrlStr)
         })()
 
-    }, [payload])
+    }, [payload, sortBy, pageSize, pageNumber, queryParams])
 
     const handleFilterPayloadChange = (e) => {
         const [filterName, filterValue] = e.currentTarget.value.split('-')
@@ -53,6 +86,14 @@ function GraphicsCardFilter({setLoadMode}) {
 
     return (
         <div className='filters-wrapper'>
+            {mobile && (
+                <div className='mobile-header-in-expand-wrapper'>
+                    <div className='mobile-header-in-expand'>
+                        <p>Filtrowanie</p>
+                    </div>
+                    <FontAwesomeIcon onClick={() => handleExpandMobileFilters('close')} className='in-mobile-filters-close' icon={faClose} />
+                </div>
+            )}
             <section>
                 <h3 className='filter-name'>Producent</h3>
                 <div className='single-filters-wrapper'>
@@ -114,7 +155,7 @@ function GraphicsCardFilter({setLoadMode}) {
                 <h3 className='filter-name'>Ilość pamięci</h3>
                 <div className='single-filters-wrapper'>
                     <label className='single-filter-label'>
-                        <input value='memorySize-2' onChange={handleFilterPayloadChange} type={'checkbox'} />
+                        <input checked={payload.memorySize?.[2] ? true : false}  value='memorySize-2' onChange={handleFilterPayloadChange} type={'checkbox'} />
                         <p className='single-filter-name'>2GB</p>
                         <p className='single-filter-count'>(227)</p>
                     </label>

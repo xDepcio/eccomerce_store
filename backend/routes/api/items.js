@@ -124,7 +124,9 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
         where: {
             id: req.params.itemId
         },
-        attributes: [],
+        attributes: {
+            exclude: ['createdAt', 'updatedAt']
+        },
         include: [
             {
                 model: FinalCategory,
@@ -138,24 +140,26 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
                     }
                 }
             },
-            {
-                model: ItemSpec,
-                attributes: {
-                    exclude: [
-                        'createdAt',
-                        'updatedAt',
-                        'itemId',
-                        'id',
-
-                    ]
-                }
-            }
+            // {
+            //     model: ItemSpec,
+            //     attributes: {
+            //         exclude: [
+            //             'createdAt',
+            //             'updatedAt',
+            //             'itemId',
+            //             'id',
+            //         ]
+            //     }
+            // }
         ]
     })
 
+    const path = `Wszystkie kategorie/${item.FinalCategory.SubCategory.MainCategory.name}/${item.FinalCategory.SubCategory.name}/${item.FinalCategory.name}/${item.name}`
+    delete item.dataValues.FinalCategory
+
     res.json({
-        ItemSpec: item.ItemSpec,
-        path: `Wszystkie kategorie/${item.FinalCategory.SubCategory.MainCategory.name}/${item.FinalCategory.SubCategory.name}/${item.FinalCategory.name}/${item.ItemSpec.name}`
+        ItemSpec: item,
+        path: path
     })
 }))
 
@@ -282,11 +286,11 @@ router.post('/:itemId/reviews', requireAuth, valdiatePostReview, asyncHandler(as
     res.json(newReview)
 }))
 
-// get items based on filter on attributes associated to ceratin category
+// get items in final category with or witout filters
 router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
 
     Object.keys(req.query).map((e, i) => req.query[e] = req.query[e].split(','))
-    // console.log(req.query, '<- query')
+    console.log(req.query, '<- query')
 
     // const payload = {...req.query}
     // console.log(payload)
@@ -297,7 +301,8 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
 
         const queryKeysToSkip = {
             size: true,
-            page: true
+            page: true,
+            sortBy: true
         }
         const whereQuery = {}
 
@@ -350,15 +355,29 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
         default:
             break;
     }
+
+    let order
+    switch (req.query.sortBy?.[0]) {
+        case 'price-desc':
+            order = [['Item', 'price', 'DESC']]
+            break;
+        case 'price-asc':
+            order = [['Item', 'price', 'ASC']]
+            break;
+        default:
+            order = []
+            break;
+    }
     // console.log(model, '330')
+    console.log(model, order, '375')
 
     // model = CategoriesGraphicsAttributesItem
     const items = await model.findAll({
         include: {
             model: Item,
             attributes: {
-                exclude: ['createdAt', 'updatedAt']
-            }
+                exclude: ['createdAt', 'updatedAt', 'description']
+            },
         },
         attributes: {
             exclude: ['createdAt', 'updatedAt', 'id', 'itemId']
@@ -382,7 +401,10 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
         //     //     ]
         //     // }
         // }
-        where: whereQuery
+        where: whereQuery,
+        order: order,
+        limit: res.locals.query.limit,
+        offset: res.locals.query.offset,
     })
 
     // items.forEach((e) => {

@@ -68,3 +68,38 @@
 .more-label:hover .single-filter-name {
     text-decoration: underline;
 }
+
+.mobile-header-in-expand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-header-in-expand > p {
+    font-weight: 600;
+    font-size: 20px;
+    color: rgb(55, 55, 55);
+}
+
+.mobile-header-in-expand-wrapper {
+    position: relative;
+    border-bottom: 2px solid rgb(173, 173, 173);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.in-mobile-filters-close {
+    position: absolute;
+    right: 0;
+    border-radius: 999px;
+    padding: 5px 9.5px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.in-mobile-filters-close:hover {
+    background-color: rgb(173, 173, 173);
+}

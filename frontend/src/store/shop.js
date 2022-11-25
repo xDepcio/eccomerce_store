@@ -10,6 +10,10 @@ const UPDATE_USER_REVIEW_VOTE = 'shop/updateUserReviewVote'
 const LOAD_USER_ITEM_REVIEW = 'shop/loadUseritemReview'
 const LOAD_FILTERED_ITEMS = 'shop/loadFilteredItems'
 const LOAD_PATH = 'shop/loadPath'
+const SET_SORT_BY = 'shop/setSortBy'
+const SET_PAGE_SIZE = 'shop/setPageSize'
+const SET_PAGE_NUMBER = 'shop/setPageNumber'
+const SET_QUERY_PARAM = 'shop/setQueryParam'
 
 // Normal action creator
 
@@ -76,6 +80,37 @@ const loadPath = (path) => {
         path
     }
 }
+
+export const setSortBy = (sortBy) => {
+    return {
+        type: SET_SORT_BY,
+        sortBy
+    }
+}
+
+export const setPageSize = (pageSize) => {
+    return {
+        type: SET_PAGE_SIZE,
+        pageSize
+    }
+}
+
+export const setPageNumber = (pageNumber) => {
+    return {
+        type: SET_PAGE_NUMBER,
+        pageNumber
+    }
+}
+
+export const setQueryParam = (paramName, paramValue) => {
+    return {
+        type: SET_QUERY_PARAM,
+        paramName,
+        paramValue
+    }
+}
+
+
 
 // Thunk action creators
 export const getCategories = (type, parent) => async (dispatch) => {
@@ -198,7 +233,7 @@ export const getUserItemReview = (itemId) => async (dispatch) => {
 
 
 // state object
-const initialState = {categories: null, reviews: []};
+const initialState = {categories: null, reviews: [], pageNumber: 1};
 
 // Reducer
 const shopReducer = (state = initialState, action) => {
@@ -254,17 +289,24 @@ const shopReducer = (state = initialState, action) => {
         case LOAD_FILTERED_ITEMS: {
             const newState = {...state}
 
-            let normalizedItems = {}
-            action.items.forEach((e) => {
-                normalizedItems[e.id] = e
-            })
+            // let normalizedItems = {}
+            // action.items.forEach((e) => {
+            //     normalizedItems[e.id] = e
+            // })
 
-            newState.searchedItems = normalizedItems
+            // newState.searchedItems = normalizedItems
+
+            newState.searchedItems = action.items
             return newState
         }
         case LOAD_USER_ITEM_REVIEW: {
             const newState = {...state}
             newState.userItemReview = action.review
+            return newState
+        }
+        case SET_QUERY_PARAM: {
+            const newState = {...state}
+            newState.queryParams = {...newState.queryParams, [action.paramName]: action.paramValue}
             return newState
         }
         default: {

@@ -203,11 +203,11 @@ function ItemPage() {
                     <h3>Specyfikacja</h3>
                     <div className='specs-wrapper'>
                         <ul>
-                            {Object.keys(item?.specs).map((e, i) => {
+                            {item?.specs.map((e, i) => {
                                 return (
                                     <li key={i}>
-                                        <span>{e}</span>
-                                        <span>{item.specs[e]}</span>
+                                        <span>{e[0]}</span>
+                                        <span>{e[1]}</span>
                                     </li>
                                 )
                             })}
