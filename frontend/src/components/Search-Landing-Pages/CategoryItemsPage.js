@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
-import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
-import { toValidUrl, urlToCategoryName } from "../../utils"
+import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setCartLength, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
+import { handleAddToCart, toValidUrl, urlToCategoryName } from "../../utils"
 import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
 import {faArrowsAlt, faArrowsSplitUpAndLeft, faArrowsUpDown, faClose, faGears, faSquareShareNodes, faStar, faStarHalf, faTh, faThLarge, faThList} from '@fortawesome/free-solid-svg-icons'
@@ -59,7 +59,7 @@ function SortersSideDesktop({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
 
     const [searchParams, setSearchParams] = useSearchParams()
     const dispatch = useDispatch()
-    const pageNumber = useSelector((state) => state.shop.pageNumber)
+    const pageNumber = useSelector((state) => state.shop.queryParams.page)
 
     return (
         <div className="page-sorter">
@@ -149,11 +149,6 @@ function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                                 <FontAwesomeIcon icon={faArrowsUpDown} />
                                 <p>Sortuj:</p>
                             </div>
-                            {/* <select className="sorting-mobile-select">
-                                <option value={'Wszystkie kategorie'}>Wszystkie kategorie</option>
-                                <option></option>
-                                <option></option>
-                            </select> */}
                             <select className="sorting-mobile-select" onChange={(e) => dispatch(setQueryParam('sortBy', e.currentTarget.value))}>
                                 <option value={'popularity'}>Popularność</option>
                                 <option value={'price-asc'}>Od najtańszych</option>
@@ -174,15 +169,22 @@ function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                                     onChange={(val) => {
                                         setMinPrice(val[0])
                                         setMaxPrice(val[1])
+                                        // dispatch(setQueryParam('minPrice', val[0]))
+                                        // dispatch(setQueryParam('maxPrice', val[1]))
                                     }}
-                                    onAfterChange={(val) => {}}
+                                    onAfterChange={(val) => {
+                                        dispatch(setQueryParam('minPrice', val[0]))
+                                        dispatch(setQueryParam('maxPrice', val[1]))
+                                    }}
                                     trackClassName="thermometer-track"
-                                    defaultValue={[0, 100]}
+                                    defaultValue={[0, 9999]}
                                     ariaLabel={['Lower thumb', 'Upper thumb']}
                                     ariaValuetext={state => `Thumb value ${state.valueNow}`}
                                     renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                                     pearling
-                                    minDistance={1}
+                                    min={0}
+                                    max={9999}
+                                    minDistance={10}
                                 />
                             </div>
                             <div style={{position: 'relative'}} className="range-value-info">
@@ -213,13 +215,13 @@ function CategoryItemsPage() {
         return []
     })
     const path = useSelector((state) => state.shop.path)
-    const pageNumber = useSelector((state) => state.shop.pageNumber)
+    const pageNumber = useSelector((state) => state.shop.queryParams.page)
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
     const navigate = useNavigate()
 
     const [minPrice, setMinPrice] = useState(0)
-    const [maxPrice, setMaxPrice] = useState(100)
+    const [maxPrice, setMaxPrice] = useState(9999)
     const [loadMode, setLoadMode] = useState(false)
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
 
@@ -305,7 +307,7 @@ function CategoryItemsPage() {
                                 </div>
                                 <div className="buy-area">
                                     <p className="price-header-in-buy">{e.price+1} zł</p>
-                                    <button>Dodaj do koszyka</button>
+                                    <button onClick={() => dispatch(setCartLength(handleAddToCart(e.id)))}>Dodaj do koszyka</button>
                                 </div>
                             </div>
                         )

@@ -1,11 +1,11 @@
 import { faArrowDown, faArrowUpShortWide, faCartShopping, faClose, faCross, faExpand, faExpandArrowsAlt, faExternalLink, faGear, faPen, faReceipt, faRefresh, faShuttleVan, faStar, faThumbsDown, faThumbsUp, faTruck, faUser, faVanShuttle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useReducer, useState } from 'react'
-import { getItemReviews, getSingleItem, getUserItemReview, getUserReviewsVotes, sendItemReview, sendUserReviewVote } from "../../store/shop"
+import { getItemReviews, getSingleItem, getUserItemReview, getUserReviewsVotes, sendItemReview, sendUserReviewVote, setCartLength } from "../../store/shop"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import './ItemPage.css'
-import { toValidUrl } from '../../utils'
+import { handleAddToCart, toValidUrl } from '../../utils'
 
 
 function ItemPage() {
@@ -179,7 +179,7 @@ function ItemPage() {
                     <div className='buy-part'>
                         <div className='buy-part-cart'>
                             <p>2907 zł</p>
-                            <button>Do koszyka<FontAwesomeIcon style={{marginLeft: '5px'}} icon={faCartShopping} /></button>
+                            <button onClick={() => dispatch(setCartLength(handleAddToCart(item.id)))}>Do koszyka<FontAwesomeIcon style={{marginLeft: '5px'}} icon={faCartShopping} /></button>
                         </div>
                         <div className='perks-part'>
                             <p><FontAwesomeIcon style={{marginRight: '5px', marginLeft: '5px',}} icon={faTruck} />Darmowa dostawa</p>

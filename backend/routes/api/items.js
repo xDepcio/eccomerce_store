@@ -163,6 +163,42 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
     })
 }))
 
+// Get all items from cart
+router.get('/:itemsId/:itemsCount', asyncHandler(async (req, res) => {
+
+    const itemsCount = JSON.parse(req.params.itemsCount)
+    const itemsIds = JSON.parse(req.params.itemsId)
+    if(itemsCount.length <= 0 || itemsIds.length <= 0) {
+        res.json([])
+        return
+    }
+
+    let items = await Item.findAll({
+        where: {
+            id: {
+                [Op.or]: itemsIds
+            }
+        },
+        attributes: {
+            exclude: [
+                'description',
+                'createdAt',
+                'updatedAt',
+                'specs',
+                'categoryId'
+            ]
+        }
+    })
+
+    items.map((e, i) => {
+        e.imagesUrl = e.imagesUrl.split(' ')[0]
+        e.dataValues.count = itemsCount[i]
+    })
+
+    console.log(items)
+    res.json(items)
+}))
+
 // Get item reviews
 router.get('/all/:itemId/reviews', asyncHandler(async (req, res) => {
 
@@ -302,7 +338,9 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
         const queryKeysToSkip = {
             size: true,
             page: true,
-            sortBy: true
+            sortBy: true,
+            minPrice: true,
+            maxPrice: true
         }
         const whereQuery = {}
 
@@ -322,25 +360,22 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
                 [Op.or]: filtersList
             }
         }
-        // payloadKeys.forEach((key, i) => {
-        //     if(queryKeysToSkip[key]) {
-        //         continue
-        //     }
-        //     const filtersList = []
-
-        //     payloadValues[i].forEach((keyValue, j) => {
-        //         filtersList.push({[Op.like]: keyValue})
-        //     })
-
-        //     whereQuery[key] = {
-        //         [Op.or]: filtersList
-        //     }
-        // })
 
         return whereQuery
     }
 
     const whereQuery = formatFilterQuery(req.query)
+
+    let prices = {}
+    if(req.query.minPrice && req.query.maxPrice) {
+        prices.price = {
+            [Op.and]: [
+                {[Op.gte]: req.query.minPrice},
+                {[Op.lte]: req.query.maxPrice},
+            ]
+        }
+    }
+
     // console.log(req.query)
     // console.log('whereQuery', whereQuery)
 
@@ -378,6 +413,9 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
             attributes: {
                 exclude: ['createdAt', 'updatedAt', 'description']
             },
+            where: {
+                ...prices
+            }
         },
         attributes: {
             exclude: ['createdAt', 'updatedAt', 'id', 'itemId']

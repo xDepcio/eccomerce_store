@@ -3,10 +3,12 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSearch, faUser, faCartShopping, faHeart, faPhone} from '@fortawesome/free-solid-svg-icons'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 function Navbar() {
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
     const navigate = useNavigate()
+    const cartLength = useSelector((state) => state.shop.cartLength)
 
     useEffect(() => {
         const myInterval = setInterval(() => {
@@ -59,9 +61,14 @@ function Navbar() {
                         <FontAwesomeIcon className='nav-cart-icon' icon={faHeart} />
                         <p>Twoje listy</p>
                     </div>
-                    <div className="nav-cart">
+                    <div onClick={() => navigate('/koszyk')} className="nav-cart">
                         <FontAwesomeIcon className='nav-cart-icon' icon={faCartShopping} />
                         <p>Koszyk</p>
+                        {cartLength && (
+                            <div className='cart-length-info'>
+                                {cartLength}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

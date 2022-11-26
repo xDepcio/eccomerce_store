@@ -1,3 +1,6 @@
+import { useDispatch } from "react-redux"
+import { setCartLength } from "./store/shop"
+
 const mappedStr = {
     'ą': 'a',
     'ę': 'e',
@@ -56,4 +59,34 @@ export const toValidUrl = (string) => {
     }
 
     return output
+}
+
+export const handleAddToCart = (itemId) => {
+
+    let currStorageItems = JSON.parse(window.localStorage.getItem('itemsInCart'))
+    if(currStorageItems === null && itemId === undefined) return
+
+    if(itemId === undefined ) {
+        return Object.keys(currStorageItems).length
+    }
+
+    if(!window.localStorage.getItem('itemsInCart')) {
+        window.localStorage.setItem('itemsInCart', JSON.stringify({}))
+    }
+
+    currStorageItems = JSON.parse(window.localStorage.getItem('itemsInCart'))
+
+    if(currStorageItems[itemId]) {
+        currStorageItems[itemId].count += 1
+    }
+    else {
+        currStorageItems[itemId] = {count: 1}
+    }
+
+    window.localStorage.setItem(
+        'itemsInCart',
+        JSON.stringify(currStorageItems)
+    )
+
+    return Object.keys(currStorageItems).length
 }

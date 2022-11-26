@@ -19,6 +19,10 @@ function SubCategories() {
         const data = dispatch(getCategories('subCategories', urlToCategoryName(url.pathname.split('/')[2])))
     }, [])
 
+    if(!path) {
+        return (<div></div>)
+    }
+
     return (
         <div className="main-categories-page-wrapper">
             <div className="orientaion-bar">

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { getCategories } from "../../store/shop"
@@ -12,13 +12,24 @@ function FinalCategories() {
     const path = useSelector((state) => state.shop.path)
     const navigate = useNavigate()
 
+    const [loaded, setLoaded] = useState(false)
+
     console.log(url.pathname.split('/'))
 
     useEffect(() => {
-        const searchedUrlPart = url.pathname.split('/')[3]
+        // const searchedUrlPart = url.pathname.split('/')[3]
 
-        const data = dispatch(getCategories('finalCategories', urlToCategoryName(searchedUrlPart)))
+        (async () => {
+            const searchedUrlPart = url.pathname.split('/')[3]
+            const data = await dispatch(getCategories('finalCategories', urlToCategoryName(searchedUrlPart)))
+            setLoaded(true)
+        })()
+
     }, [])
+
+    if(!loaded) {
+        return (<div></div>)
+    }
 
     return (
         <div className="main-categories-page-wrapper">

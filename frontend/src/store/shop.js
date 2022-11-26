@@ -14,6 +14,10 @@ const SET_SORT_BY = 'shop/setSortBy'
 const SET_PAGE_SIZE = 'shop/setPageSize'
 const SET_PAGE_NUMBER = 'shop/setPageNumber'
 const SET_QUERY_PARAM = 'shop/setQueryParam'
+const SET_CART_LENGTH = 'shop/setCartLength'
+const LOAD_CART_ITEMS = 'shop/loadCartItems'
+const ADD_CART_ITEM = 'shop/addCartItem'
+const REMOVE_CART_ITEM = 'shop/removeCartItem'
 
 // Normal action creator
 
@@ -110,6 +114,34 @@ export const setQueryParam = (paramName, paramValue) => {
     }
 }
 
+export const setCartLength = (cartLength) => {
+    return {
+        type: SET_CART_LENGTH,
+        cartLength,
+    }
+}
+
+export const loadCartItems = (cartItems) => {
+    return {
+        type: LOAD_CART_ITEMS,
+        cartItems,
+    }
+}
+
+export const addCartItem = (itemId) => {
+    return {
+        type: ADD_CART_ITEM,
+        itemId,
+    }
+}
+
+export const removeCartItem = (itemId, removeAll=false) => {
+    return {
+        type: REMOVE_CART_ITEM,
+        itemId,
+        removeAll
+    }
+}
 
 
 // Thunk action creators
@@ -230,10 +262,20 @@ export const getUserItemReview = (itemId) => async (dispatch) => {
     }
 }
 
+export const getCartItems = (itemsId, itemsCount) => async (dispatch) => {
+    const response = await csrfFetch(`/api/items/${JSON.stringify(itemsId)}/${JSON.stringify(itemsCount)}`)
+
+    if(response.ok) {
+        const cartItems = await response.json()
+        // console.log('DATATATA', data)
+        dispatch(loadCartItems(cartItems))
+    }
+}
+
 
 
 // state object
-const initialState = {categories: null, reviews: [], pageNumber: 1};
+const initialState = {categories: null, reviews: [], queryParams: {page: 1}, cart: {items: [], cartLength: 0, itemsSpecs: {}}};
 
 // Reducer
 const shopReducer = (state = initialState, action) => {
@@ -307,6 +349,58 @@ const shopReducer = (state = initialState, action) => {
         case SET_QUERY_PARAM: {
             const newState = {...state}
             newState.queryParams = {...newState.queryParams, [action.paramName]: action.paramValue}
+            return newState
+        }
+        case SET_CART_LENGTH: {
+            const newState = {...state}
+            console.log(action.cartLength)
+            if(!action.cartLength) return newState
+            newState.cartLength = action.cartLength
+            return newState
+        }
+        case LOAD_CART_ITEMS: {
+            const newState = {...state}
+            newState.cartItems = action.cartItems
+            return newState
+        }
+        case ADD_CART_ITEM: {
+            const newState = {...state}
+
+            let itemAlreadyInCart = false
+            newState.cart.items.forEach((e) => {
+                if(e.itemId === action.itemId) {
+                    e.count += 1
+                    itemAlreadyInCart = true
+                }
+            })
+
+            if(!itemAlreadyInCart) {
+                newState.cart.items.push({itemId: action.itemId, count: 1})
+            }
+
+            console.log(newState)
+            window.localStorage.setItem(JSON.stringify(newState.cart))
+
+            return newState
+        }
+        case REMOVE_CART_ITEM: {
+            const newState = {...state}
+
+            newState.cart.items.forEach((e, i) => {
+                if(e.itemId === action.itemId) {
+                    if(action.removeAll) {
+                        newState.cart.items.splice(i, 1)
+                    }
+                    else {
+
+                    }
+                    e.count -= 1
+                }
+            })
+
+            console.log(newState)
+            window.localStorage.setItem(JSON.stringify(newState.cart))
+
             return newState
         }
         default: {

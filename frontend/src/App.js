@@ -9,10 +9,12 @@ import { restoreUser } from './store/session';
 import SubCategories from './components/Search-Landing-Pages/SubCategories'
 import FinalCategories from './components/Search-Landing-Pages/FinalCategories'
 import MainCategories from './components/Search-Landing-Pages/MainCategories';
-import { getCategories } from './store/shop';
+import { getCategories, setCartLength } from './store/shop';
 import CategoryItemsPage from './components/Search-Landing-Pages/CategoryItemsPage';
 import ItemPage from './components/Item/ItemPage';
 import Footer from './components/Footer/Footer';
+import { handleAddToCart } from './utils';
+import Cart from './components/Cart/Cart';
 
 
 function App() {
@@ -25,6 +27,7 @@ function App() {
       .then(() => {
         dispatch(getCategories()).then(() => setIsLoaded(true))
       })
+    dispatch(setCartLength(handleAddToCart()))
   }, [])
 
   // console.log('path', url)
@@ -42,6 +45,7 @@ function App() {
       <Route exact path='/kategorie/:mainCategories/:subCategories' element={<FinalCategories />} />
       <Route exact path='/kategorie/:mainCategories/:subCategories/:finalCategory' element={<CategoryItemsPage />} />
       <Route exact path='/produkty/:itemId' element={<ItemPage />} />
+      <Route exact path='/koszyk' element={<Cart />} />
 
     </Routes>
     <Footer />
