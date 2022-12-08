@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux'
 function Navbar() {
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
     const navigate = useNavigate()
-    const cartLength = useSelector((state) => state.shop.cartLength)
+    const cartLength = useSelector((state) => state.shop.cart.items.length)
 
     useEffect(() => {
         const myInterval = setInterval(() => {
@@ -64,7 +64,7 @@ function Navbar() {
                     <div onClick={() => navigate('/koszyk')} className="nav-cart">
                         <FontAwesomeIcon className='nav-cart-icon' icon={faCartShopping} />
                         <p>Koszyk</p>
-                        {cartLength && (
+                        {cartLength != 0 && (
                             <div className='cart-length-info'>
                                 {cartLength}
                             </div>

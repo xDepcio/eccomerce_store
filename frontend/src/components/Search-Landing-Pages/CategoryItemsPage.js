@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
-import { getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setCartLength, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
+import { addCartItem, getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setCartLength, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
 import { handleAddToCart, toValidUrl, urlToCategoryName } from "../../utils"
 import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
@@ -306,8 +306,8 @@ function CategoryItemsPage() {
                                     </ul>
                                 </div>
                                 <div className="buy-area">
-                                    <p className="price-header-in-buy">{e.price+1} zł</p>
-                                    <button onClick={() => dispatch(setCartLength(handleAddToCart(e.id)))}>Dodaj do koszyka</button>
+                                    <p className="price-header-in-buy">{e.price} zł</p>
+                                    <button onClick={() => dispatch(addCartItem(e.id))}>Dodaj do koszyka</button>
                                 </div>
                             </div>
                         )

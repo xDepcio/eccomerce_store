@@ -15,9 +15,10 @@ const SET_PAGE_SIZE = 'shop/setPageSize'
 const SET_PAGE_NUMBER = 'shop/setPageNumber'
 const SET_QUERY_PARAM = 'shop/setQueryParam'
 const SET_CART_LENGTH = 'shop/setCartLength'
-const LOAD_CART_ITEMS = 'shop/loadCartItems'
+const LOAD_CART_ITEMS_SPECS = 'shop/loadCartItemsSpecs'
 const ADD_CART_ITEM = 'shop/addCartItem'
 const REMOVE_CART_ITEM = 'shop/removeCartItem'
+const LOAD_CART = 'shop/loadCart'
 
 // Normal action creator
 
@@ -121,10 +122,10 @@ export const setCartLength = (cartLength) => {
     }
 }
 
-export const loadCartItems = (cartItems) => {
+export const loadCartItemsSpecs = (cartItemsSpecs) => {
     return {
-        type: LOAD_CART_ITEMS,
-        cartItems,
+        type: LOAD_CART_ITEMS_SPECS,
+        cartItemsSpecs,
     }
 }
 
@@ -140,6 +141,12 @@ export const removeCartItem = (itemId, removeAll=false) => {
         type: REMOVE_CART_ITEM,
         itemId,
         removeAll
+    }
+}
+
+export const loadCart = () => {
+    return {
+        type: LOAD_CART,
     }
 }
 
@@ -262,20 +269,43 @@ export const getUserItemReview = (itemId) => async (dispatch) => {
     }
 }
 
-export const getCartItems = (itemsId, itemsCount) => async (dispatch) => {
-    const response = await csrfFetch(`/api/items/${JSON.stringify(itemsId)}/${JSON.stringify(itemsCount)}`)
+export const getCartItems = (itemsId) => async (dispatch) => {
+    itemsId = itemsId.map((e) => e.itemId)
+    console.log(JSON.stringify(itemsId))
+    const response = await csrfFetch(`/api/items/list/${JSON.stringify(itemsId)}`)
 
     if(response.ok) {
-        const cartItems = await response.json()
+        const cartItemsSpecs = await response.json()
         // console.log('DATATATA', data)
-        dispatch(loadCartItems(cartItems))
+        dispatch(loadCartItemsSpecs(cartItemsSpecs))
+    }
+}
+
+export const getDeliveries = () => async (dispatch) => {
+    const response = await csrfFetch(`/api/users/reviews/${itemId}`)
+
+    if(response.ok) {
+        const review = await response.json()
+        // console.log('DATATATA', data)
+        dispatch(loadUserItemReview(review))
     }
 }
 
 
 
 // state object
-const initialState = {categories: null, reviews: [], queryParams: {page: 1}, cart: {items: [], cartLength: 0, itemsSpecs: {}}};
+const initialState = {
+    categories: null,
+    reviews: [],
+    queryParams: {
+        page: 1
+    },
+    cart: {
+        items: [],
+        cartLength: 0,
+        itemsSpecs: {}
+    }
+};
 
 // Reducer
 const shopReducer = (state = initialState, action) => {
@@ -358,16 +388,25 @@ const shopReducer = (state = initialState, action) => {
             newState.cartLength = action.cartLength
             return newState
         }
-        case LOAD_CART_ITEMS: {
+        case LOAD_CART_ITEMS_SPECS: {
             const newState = {...state}
-            newState.cartItems = action.cartItems
+
+            let normalizedItemsSpecs = {}
+            action.cartItemsSpecs.forEach((e) => {
+                normalizedItemsSpecs[e.id] = e
+            })
+
+            newState.cart.itemsSpecs = normalizedItemsSpecs
+
             return newState
         }
         case ADD_CART_ITEM: {
             const newState = {...state}
+            console.log(newState)
 
             let itemAlreadyInCart = false
-            newState.cart.items.forEach((e) => {
+            let newCartItems = [...newState.cart.items]
+            newCartItems.forEach((e) => {
                 if(e.itemId === action.itemId) {
                     e.count += 1
                     itemAlreadyInCart = true
@@ -375,31 +414,43 @@ const shopReducer = (state = initialState, action) => {
             })
 
             if(!itemAlreadyInCart) {
-                newState.cart.items.push({itemId: action.itemId, count: 1})
+                newCartItems.push({itemId: action.itemId, count: 1})
+                newState.cart.cartLength += 1
             }
 
-            console.log(newState)
-            window.localStorage.setItem(JSON.stringify(newState.cart))
+            newState.cart.items = newCartItems
+            window.localStorage.setItem('cart', JSON.stringify(newState.cart))
 
             return newState
         }
         case REMOVE_CART_ITEM: {
             const newState = {...state}
 
-            newState.cart.items.forEach((e, i) => {
+            let newCartItems = [...newState.cart.items]
+            newCartItems.forEach((e, i) => {
                 if(e.itemId === action.itemId) {
                     if(action.removeAll) {
-                        newState.cart.items.splice(i, 1)
+                        newCartItems.splice(i, 1)
+                        newState.cart.cartLength -= 1
                     }
                     else {
+                        e.count -= 1
 
                     }
-                    e.count -= 1
                 }
             })
 
-            console.log(newState)
-            window.localStorage.setItem(JSON.stringify(newState.cart))
+            newState.cart.items = newCartItems
+            window.localStorage.setItem('cart', JSON.stringify(newState.cart))
+
+            return newState
+        }
+        case LOAD_CART: {
+            const newState = {...state}
+
+            if(JSON.parse(window.localStorage.getItem('cart'))) {
+                newState.cart = JSON.parse(window.localStorage.getItem('cart'))
+            }
 
             return newState
         }

@@ -164,14 +164,9 @@ router.get('/all/:itemId', asyncHandler(async (req, res) => {
 }))
 
 // Get all items from cart
-router.get('/:itemsId/:itemsCount', asyncHandler(async (req, res) => {
+router.get('/list/:itemsId', asyncHandler(async (req, res) => {
 
-    const itemsCount = JSON.parse(req.params.itemsCount)
     const itemsIds = JSON.parse(req.params.itemsId)
-    if(itemsCount.length <= 0 || itemsIds.length <= 0) {
-        res.json([])
-        return
-    }
 
     let items = await Item.findAll({
         where: {
@@ -192,10 +187,10 @@ router.get('/:itemsId/:itemsCount', asyncHandler(async (req, res) => {
 
     items.map((e, i) => {
         e.imagesUrl = e.imagesUrl.split(' ')[0]
-        e.dataValues.count = itemsCount[i]
+        // e.dataValues.count = itemsCount[i]
     })
 
-    console.log(items)
+    // console.log(items)
     res.json(items)
 }))
 
