@@ -19,6 +19,7 @@ const LOAD_CART_ITEMS_SPECS = 'shop/loadCartItemsSpecs'
 const ADD_CART_ITEM = 'shop/addCartItem'
 const REMOVE_CART_ITEM = 'shop/removeCartItem'
 const LOAD_CART = 'shop/loadCart'
+const LOAD_DELIVERIES = 'shop/loadDeliveries'
 
 // Normal action creator
 
@@ -147,6 +148,13 @@ export const removeCartItem = (itemId, removeAll=false) => {
 export const loadCart = () => {
     return {
         type: LOAD_CART,
+    }
+}
+
+const loadDeliveries = (deliveries) => {
+    return {
+        type: LOAD_DELIVERIES,
+        deliveries
     }
 }
 
@@ -282,12 +290,11 @@ export const getCartItems = (itemsId) => async (dispatch) => {
 }
 
 export const getDeliveries = () => async (dispatch) => {
-    const response = await csrfFetch(`/api/users/reviews/${itemId}`)
+    const response = await csrfFetch(`/api/deliveries`)
 
     if(response.ok) {
-        const review = await response.json()
-        // console.log('DATATATA', data)
-        dispatch(loadUserItemReview(review))
+        const deliveries = await response.json()
+        dispatch(loadDeliveries(deliveries))
     }
 }
 
@@ -452,6 +459,11 @@ const shopReducer = (state = initialState, action) => {
                 newState.cart = JSON.parse(window.localStorage.getItem('cart'))
             }
 
+            return newState
+        }
+        case LOAD_DELIVERIES: {
+            const newState = {...state}
+            newState.cart.deliveries = action.deliveries
             return newState
         }
         default: {

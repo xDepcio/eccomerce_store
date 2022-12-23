@@ -5,10 +5,15 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faCaretRight, faCashRegister, faCreditCard, faDollar, faList, faShoppingCart, faShuttleVan, faTruck, faVanShuttle } from '@fortawesome/free-solid-svg-icons'
 import Delivery from './Delivery'
 import { Route, Routes, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { getCartItems } from '../../store/shop'
 
 
 function Cart() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const cartItems = useSelector((state) => state.shop.cart.items)
 
     const cartComponentsOrder = {
         'items': 0,
@@ -17,18 +22,11 @@ function Cart() {
         'payment': 3,
     }
     const [displayCartComponent, setDisplayCartComponent] = useState('items')
-    // const [displayReactEle, setDisplayReactEle] = useState(<CartItems />)
 
-    // useEffect(() => {
-    //     switch(displayCartComponent) {
-    //         case 'items':
-    //             setDisplayReactEle(<CartItems setDisplayCartComponent={setDisplayCartComponent} />)
-    //             break
-    //         case 'delivery':
-    //             setDisplayReactEle(<Delivery setDisplayCartComponent={setDisplayCartComponent} />)
-    //             break
-    //     }
-    // }, [displayCartComponent])
+    useEffect(() => {
+        console.log(cartItems)
+        dispatch(getCartItems(cartItems))
+    }, [])
 
     return (
         <div className='cart-wrapper'>
@@ -57,16 +55,6 @@ function Cart() {
                     </div>
                     <FontAwesomeIcon className='next-cart-part-icon' icon={faCaretRight} />
 
-                    {/* <div onClick={(e) => {
-                        if(!e.currentTarget.classList.contains('cart-part-next')) {
-                            setDisplayCartComponent('summary')
-                        }
-                    }} className={`cart-navigation-part ${['cart-part-next', 'cart-part-next', '', 'cart-part-completed'][cartComponentsOrder[displayCartComponent]]}`}>
-                        <FontAwesomeIcon icon={faList} />
-                        <p>Podsumowanie</p>
-                    </div>
-                    <FontAwesomeIcon className='next-cart-part-icon' icon={faCaretRight} /> */}
-
                     <div onClick={(e) => {
                         if(!e.currentTarget.classList.contains('cart-part-next')) {
                             navigate('/koszyk/platnosc')
@@ -78,10 +66,9 @@ function Cart() {
                     </div>
                 </div>
                 <Routes>
-                    <Route path={'/'} element={<CartItems />} />
-                    <Route path={'/dostawa'} element={<Delivery />} />
+                    <Route path={'/'} element={<CartItems setDisplayCartComponent={setDisplayCartComponent} />} />
+                    <Route path={'/dostawa'} element={<Delivery setDisplayCartComponent={setDisplayCartComponent} />} />
                 </Routes>
-                {/* {displayReactEle} */}
             </div>
         </div>
     )

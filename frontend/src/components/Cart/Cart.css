@@ -56,17 +56,21 @@
     border: 2px solid rgb(231, 231, 231);
     border-radius: 999px;
     cursor: pointer;
+    scale: 1.03;
+    transition-duration: 0.12s;
 }
 
 .cart-part-completed {
     background-color: rgb(62, 162, 255);
     color: white;
     border: 2px solid rgb(62, 162, 255);
+    scale: 1;
 }
 
 .cart-part-next {
     opacity: 0.6;
     cursor: default;
+    scale: 1;
 }
 
 .next-cart-part-icon {

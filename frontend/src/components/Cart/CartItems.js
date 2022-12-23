@@ -18,7 +18,8 @@ function CartItems({setDisplayCartComponent}) {
     const [totalCartValue, setTotalCartValue] = useState(0)
 
     useEffect(() => {
-        dispatch(getCartItems(cartItems))
+        // dispatch(getCartItems(cartItems))
+        setDisplayCartComponent('items')
     }, [])
 
     useEffect(() => {

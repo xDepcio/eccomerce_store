@@ -1,13 +1,22 @@
 import { faCheck, faClose, faCreditCard, faList, faList12, faListAlt, faMoneyBill, faMoneyBill1, faMoneyBill1Wave, faMoneyBills, faWallet } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { getAllUserAddresses, getDefaultUserAddress } from '../../store/session'
+import { getCartItems, getDeliveries } from '../../store/shop'
 import './Delivery.css'
 
-function Delivery() {
+function Delivery({setDisplayCartComponent}) {
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const cartItems = useSelector((state) => state.shop.cart.items)
     const cartItemsSpecs = useSelector((state) => state.shop.cart.itemsSpecs)
+    const avalibleDeliveries = useSelector((state) => state.shop.cart?.deliveries)
+    const user = useSelector((state) => state.session.user)
+    const defaultAddress = useSelector((state) => state.session.user.defaultAddress)
 
 
     const [firstName, setFirstName] = useState('')
@@ -27,20 +36,36 @@ function Delivery() {
 
 
     const calculateTotalCartValue = () => {
+        console.log('cartItems', cartItems)
         const totalValue = cartItems.reduce((acc, currVal) => {
-            return acc + cartItemsSpecs[currVal.itemId]?.price * currVal.count
+            if(cartItemsSpecs[currVal.itemId]) {
+                return acc + cartItemsSpecs[currVal.itemId]?.price * currVal.count
+            }
+            return 0
         }, 0)
-
         return totalValue
     }
 
     useEffect(() => {
-        setTotalPrice(cartPrice + deliveryPrice/100)
-    }, [delivery])
+        if(cartPrice !== undefined && deliveryPrice !== undefined) {
+            setTotalPrice(cartPrice + deliveryPrice/100)
+        }
+    }, [delivery, cartPrice])
+
+    useEffect(() => {
+        setDisplayCartComponent('delivery')
+        dispatch(getDeliveries())
+        dispatch(getDefaultUserAddress())
+        dispatch(getAllUserAddresses())
+    }, [])
 
     useEffect(() => {
         setCartPrice(calculateTotalCartValue())
-    }, [])
+    }, [cartItemsSpecs])
+
+    if(!user) {
+        navigate('/login')
+    }
 
     return (
         <div className='delivery-cart-wrapper'>
@@ -117,7 +142,29 @@ function Delivery() {
             <section className='delivery-type-section'>
                 <h3>Metoda wysyłki:</h3>
                 <div className='delivery-methods-wrapper'>
-                    <label id='delivery-1' style={{
+                    {avalibleDeliveries?.map((ele, i) => (
+                        <label key={i} id={`delivery-${ele.id}`} style={{
+                            borderColor: deliveryId === `delivery-${ele.id}` ? 'rgb(62, 162, 255)' : 'rgb(202, 202, 202)',
+                            backgroundColor: deliveryId === `delivery-${ele.id}` ? '#f3f3f3' : 'white'
+                            }}>
+                            <input onClick={(e) => {
+                                setDelivery(e.currentTarget.value)
+                                setDeliveryId(`delivery-${ele.id}`)
+                                setDeliveryPrice(ele.price)
+                                }} value={ele.name} name='delivery' type={'radio'} />
+                            <div className='delivery-method-content-wrapper'>
+                                <h3 className='delivery-name'>Paczkomaty Inpost</h3>
+                                <div className='delivery-image-wrapper'>
+                                    <img src={ele.imageUrl} />
+                                </div>
+                                <div className='delivery-info-wrapper'>
+                                    <p>Planowana dostawa śr. 30 grudnia</p>
+                                    <p className='delivery-method-price-wrapper'>Cena:<span>{ele.price/100}</span>zł</p>
+                                </div>
+                            </div>
+                        </label>
+                    ))}
+                    {/* <label id='delivery-1' style={{
                         borderColor: deliveryId === 'delivery-1' ? 'rgb(62, 162, 255)' : 'rgb(202, 202, 202)',
                         backgroundColor: deliveryId === 'delivery-1' ? '#f3f3f3' : 'white'
                         }}>
@@ -176,7 +223,7 @@ function Delivery() {
                                 <p className='delivery-method-price-wrapper'>Cena:<span>9.99</span>zł</p>
                             </div>
                         </div>
-                    </label>
+                    </label> */}
                 </div>
             </section>
         </div>
