@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom"
-import { addCartItem, getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setCartLength, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
+import { addCartItem, clearQueryParams, getCategories, getCategoryItems, getFilteredCategoryItems, getFinalCategoryPath, setCartLength, setPageNumber, setPageSize, setQueryParam, setSortBy } from "../../store/shop"
 import { handleAddToCart, toValidUrl, urlToCategoryName } from "../../utils"
 import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
@@ -243,6 +243,8 @@ function CategoryItemsPage() {
 
     useEffect(() => {
         const path = dispatch(getFinalCategoryPath(urlToCategoryName(finalCategoryName)))
+        // dispatch(clearQueryParams())
+        return () => dispatch(clearQueryParams())
     }, [])
 
     useEffect(() => {
@@ -262,7 +264,10 @@ function CategoryItemsPage() {
         const paramsUrl = new URLSearchParams({...query})
         console.log(paramsUrl.toString(), 'PRMSURL')
 
-        dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrl))
+        setLoadMode(true)
+        dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrl)).then(
+            () => setLoadMode(false)
+        )
     }, [queryParams])
 
     return (

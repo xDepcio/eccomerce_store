@@ -331,7 +331,7 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     // console.log(payload)
     console.log(req.params, 'PARAMS')
 
-    const formatFilterQuery = (payload) => {
+    function formatFilterQuery(payload) {
         const payloadKeys = Object.keys(payload)
         const payloadValues = Object.values(payload)
 

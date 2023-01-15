@@ -22,6 +22,7 @@ const LOAD_CART = 'shop/loadCart'
 const LOAD_DELIVERIES = 'shop/loadDeliveries'
 const ADD_SEARCH_FILTER = 'shop/addSearchFilter'
 const REMOVE_SEARCH_FILTER = 'shop/removeSearchFilter'
+const CLEAR_QUERY = 'shop/clearQueryParams'
 
 // Normal action creator
 
@@ -173,6 +174,12 @@ export const removeSearchFilter = (filterName, filterValue) => {
         type: REMOVE_SEARCH_FILTER,
         filterName,
         filterValue
+    }
+}
+
+export const clearQueryParams = () => {
+    return {
+        type: CLEAR_QUERY,
     }
 }
 
@@ -506,6 +513,11 @@ const shopReducer = (state = initialState, action) => {
         case LOAD_DELIVERIES: {
             const newState = {...state}
             newState.cart.deliveries = action.deliveries
+            return newState
+        }
+        case CLEAR_QUERY: {
+            const newState = {...state}
+            newState.queryParams = {...newState.queryParams, filters: {}}
             return newState
         }
         default: {

@@ -77,7 +77,7 @@ function FilterSection({name, entires, setLoadMode}) {
                     const [attrName, attrValue, displayValue] = ele
                     if(i < 4) {
                         return (
-                            <label className='single-filter-label'>
+                            <label key={i} className='single-filter-label'>
                                 <input value={`${attrName}-${attrValue}`} onChange={handleFilterPayloadChange} type={'checkbox'} />
                                 <p className='single-filter-name'>{displayValue}</p>
                                 <p className='single-filter-count'>(227)</p>
@@ -86,7 +86,7 @@ function FilterSection({name, entires, setLoadMode}) {
                     }
                     else {
                         return (
-                            <label style={{
+                            <label key={i}  style={{
                                 visibility: expandCategories.producent ? 'visible' : 'hidden',
                                 position: expandCategories.producent ? 'relative' : 'absolute'
                                 }} className='single-filter-label'>
