@@ -76,10 +76,12 @@ const loadUserItemReview = (review) => {
     }
 }
 
-const loadFilteredItems = (items) => {
+const loadFilteredItems = (items, maxPrice, minPrice) => {
     return {
         type: LOAD_FILTERED_ITEMS,
-        items
+        items,
+        maxPrice,
+        minPrice
     }
 }
 
@@ -221,8 +223,9 @@ export const getFilteredCategoryItems = (finalCategoryName, searchUrlStr='') => 
     const response = await csrfFetch(`/api/items/${finalCategoryName}?` + searchUrlStr)
 
     if(response.ok) {
-        const items = await response.json()
-        dispatch(loadFilteredItems(items))
+        const data = await response.json()
+        const {items, maxPrice, minPrice} = data
+        dispatch(loadFilteredItems(items, maxPrice, minPrice))
         return response
     }
 }
@@ -336,7 +339,9 @@ const initialState = {
         items: [],
         cartLength: 0,
         itemsSpecs: {}
-    }
+    },
+    maxPrice: 10,
+    minPrice: 0
 };
 
 // Reducer
@@ -401,6 +406,8 @@ const shopReducer = (state = initialState, action) => {
             // newState.searchedItems = normalizedItems
 
             newState.searchedItems = action.items
+            newState.maxPrice = action.maxPrice
+            newState.minPrice = action.minPrice
             return newState
         }
         case LOAD_USER_ITEM_REVIEW: {

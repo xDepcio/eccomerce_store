@@ -2,63 +2,19 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import './Filters.css'
-import { csrfFetch } from "../../../store/csrf"
 import { useDispatch, useSelector } from 'react-redux'
 import { addSearchFilter, getCategoryItems, getFilteredCategoryItems, removeSearchFilter, setQueryParam } from '../../../store/shop'
 import { useLocation, useSearchParams } from 'react-router-dom'
-import { urlToCategoryName } from '../../../utils'
 
 
-function FilterSection({name, entires, setLoadMode}) {
+function FilterSection({name, entires}) {
 
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
-    // const sortBy = useSelector((state) => state.shop.sortBy)
-    // const pageSize = useSelector((state) => state.shop.pageSize)
-    // const pageNumber = useSelector((state) => state.shop.pageNumber)
-    // const queryParams = useSelector((state) => state.shop.queryParams)
 
     const [expandCategories, setExpandCategories] = useState({})
-    const [payload, setPaylaod] = useState({})
-
-    useEffect(() => {
-        // if(payload === undefined) {
-        //     return
-        // }
-        // console.log(myVar, 'PLD')
-        // console.log('PLD')
-        (async () => {
-            console.log(payload, "PLD")
-            const payloadKeys = Object.keys(payload)
-            const payloadValues = Object.values(payload)
-            const normalizedPayload = payloadKeys.map((e, i) => [e, Object.keys(payloadValues[i]).filter((e, j) => Object.values(payloadValues[i])[j] === true)])
-
-            const newPayload = {}
-            for (const [key, value] of normalizedPayload) {
-
-                if(value.length <= 0) {
-                    continue
-                }
-                newPayload[key] = value
-            }
-
-            console.log(newPayload)
-            const paramsUrl = new URLSearchParams({...newPayload})
-
-            const paramsUrlStr = paramsUrl.toString()
-
-            console.log(paramsUrlStr)
-
-            setLoadMode(true)
-            await dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrlStr))
-            setLoadMode(false)
-            console.log('==============')
-        })()
-
-    }, [payload])
 
     const handleFilterPayloadChange = (e) => {
-        console.log(payload)
         const [filterName, filterValue] = e.currentTarget.value.split('-')
         if(e.currentTarget.checked) {
             dispatch(addSearchFilter(filterName, filterValue))
@@ -66,7 +22,6 @@ function FilterSection({name, entires, setLoadMode}) {
         else {
             dispatch(removeSearchFilter(filterName, filterValue))
         }
-        // setPaylaod({...payload, [filterName]: {...payload[filterName], [filterValue]: e.currentTarget.checked}})
     }
 
     return (

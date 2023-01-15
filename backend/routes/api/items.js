@@ -462,7 +462,22 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     // })
     // console.log([...items.map((e) => e.Item.dataValues)])
     // console.log(items)
-    res.json([...items.map((e) => {
+    const minMax = await model.findAll({
+        include: {
+            model: Item,
+            // attributes: []
+        },
+        attributes: [
+            [sequelize.fn('min', sequelize.col('price')), 'minValue'],
+            [sequelize.fn('max', sequelize.col('price')), 'maxValue']
+        ],
+        where: whereQuery,
+        raw: true
+    })
+    const [minPrice, maxPrice] = Object.values(minMax[0])
+
+    console.log('minMax', minMax)
+    const normalizedItems = [...items.map((e) => {
         let specs = {...e.dataValues}
         delete specs.Item
         let dataValues = {...e.Item.dataValues, specs: specs}
@@ -470,7 +485,8 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
         // console.log(dataValues)
         return dataValues
         // {...e.Item.dataValues, specs: 't'}
-    })])
+    })]
+    res.json({items: normalizedItems, minPrice, maxPrice})
     // res.json(items)
     // res.json([...items.map((e) => e.Item.dataValues)])
 }))

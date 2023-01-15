@@ -54,7 +54,7 @@ function LoginForm() {
         <div className='login-outer-wrapper'>
             <div className="login-wrapper">
                 <div className='image-wrapper'>
-                    <img onClick={() => navigate('/')} src='http://localhost:5000/images/logo-skype.png'></img>
+                    <img src='http://localhost:5000/images/logo-skype.png'></img>
                 </div>
                 <div className='login-reg-wrapper'>
                     <p style={{
@@ -77,10 +77,10 @@ function LoginForm() {
                                 <input className='email' onChange={(e) => setEmail(e.currentTarget.value)} value={email} placeholder='Email'></input>
                             </label>
                             <label className='password-label'>
-                                <input className='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder='Hasło'></input>
+                                <input type={'password'} className='password' onChange={(e) => setPassword(e.currentTarget.value)} value={password} placeholder='Hasło'></input>
                             </label>
                             <label className='repeat-password-label'>
-                                <input className='repeat-password' placeholder='Powtórz hasło'></input>
+                                <input type={'password'} className='repeat-password' placeholder='Powtórz hasło'></input>
                             </label>
                             <label className='checkbox-terms-label'>
                                 <input type={'checkbox'}></input>
@@ -99,7 +99,7 @@ function LoginForm() {
                                 <input value={email} onChange={(e) => setEmail(e.target.value)} className='email' placeholder='Email'></input>
                             </label>
                             <label className='password-label'>
-                                <input value={password} onChange={(e) => setPassword(e.target.value)} className='password' placeholder='Hasło'></input>
+                                <input type={'password'}  value={password} onChange={(e) => setPassword(e.target.value)} className='password' placeholder='Hasło'></input>
                             </label>
                             <div className='login-pass-options-wrapper'>
                                 <label style={{marginTop: 0, width: 'unset'}} className='checkbox-terms-label'>

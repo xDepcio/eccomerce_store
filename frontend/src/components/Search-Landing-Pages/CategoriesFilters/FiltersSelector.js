@@ -10,6 +10,7 @@ import { urlToCategoryName } from '../../../utils'
 import FilterSection from './FilterSection'
 import GraphcisCardFilter from './GraphcisCardFilter'
 import GamingMiceFilter from './GamingMiceFilter'
+import ProcessorsFilter from './ProcessorsFilter'
 
 function FiltersSelector({setLoadMode, mobile, handleExpandMobileFilters}) {
 
@@ -91,11 +92,15 @@ function FiltersSelector({setLoadMode, mobile, handleExpandMobileFilters}) {
         useEffect(() => {
             switch(finalCategoryName) {
                 case "karty-graficzne": {
-                    setAttributesFilter(<GraphcisCardFilter setLoadMode={setLoadMode} />)
+                    setAttributesFilter(<GraphcisCardFilter />)
                     break
                 }
                 case "myszki-gamingowe": {
-                    setAttributesFilter(<GamingMiceFilter setLoadMode={setLoadMode} />)
+                    setAttributesFilter(<GamingMiceFilter />)
+                    break
+                }
+                case "procesory": {
+                    setAttributesFilter(<ProcessorsFilter />)
                     break
                 }
             }

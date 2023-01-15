@@ -24,7 +24,7 @@
 
 .image-wrapper > img {
     width: 320px;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .credentials-wrapper > form {

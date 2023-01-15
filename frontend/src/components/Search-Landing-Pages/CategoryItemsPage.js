@@ -11,18 +11,18 @@ import GraphicsCardFilter from "./CategoriesFilters/FiltersSelector"
 import FiltersSelector from "./CategoriesFilters/FiltersSelector"
 
 
-function FiltersSideDesktop({setLoadMode}) {
+function FiltersSideDesktop() {
     return (
         <div className="page-filter">
                 <div className="page-filter-header">
                     <p>Filtrowanie</p>
                 </div>
-            <FiltersSelector setLoadMode={setLoadMode} />
+            <FiltersSelector />
         </div>
     )
 }
 
-function FiltersSideMobile({setLoadMode}) {
+function FiltersSideMobile() {
 
     const handleExpandMobileFilters = (action) => {
         const filtersEle = document.getElementById('mobile-filters')
@@ -42,7 +42,7 @@ function FiltersSideMobile({setLoadMode}) {
         <>
             <>
                 <div id="mobile-filters" className="mobile-filters-expanded">
-                    <FiltersSelector handleExpandMobileFilters={handleExpandMobileFilters} mobile={true} setLoadMode={setLoadMode} />
+                    <FiltersSelector handleExpandMobileFilters={handleExpandMobileFilters} mobile={true} />
                 </div>
                 <div id="mobile-filters-darkener" onClick={() => handleExpandMobileFilters('close')} className="darken-mobile-filters"></div>
             </>
@@ -56,11 +56,22 @@ function FiltersSideMobile({setLoadMode}) {
     )
 }
 
-function SortersSideDesktop({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
+function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
 
     const [searchParams, setSearchParams] = useSearchParams()
     const dispatch = useDispatch()
     const pageNumber = useSelector((state) => state.shop.queryParams.page)
+    // const _minPrice = useSelector((state) => state.shop.minPrice || 0)
+    // const _maxPrice = useSelector((state) => state.shop.maxPrice || 10)
+    // const [__minPrice, __setMinPrice] = useState(_minPrice)
+    // const [__maxPrice, __setMaxPrice] = useState(_maxPrice)
+
+    // useEffect(() => {
+    //     __setMinPrice(_minPrice)
+    //     __setMaxPrice(_maxPrice)
+    // }, [_maxPrice, __minPrice])
+    const _minPrice = useSelector((state) => state.shop.minPrice)
+    const _maxPrice = useSelector((state) => state.shop.maxPrice)
 
     return (
         <div className="page-sorter">
@@ -88,19 +99,19 @@ function SortersSideDesktop({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                             dispatch(setQueryParam('maxPrice', val[1]))
                         }}
                         trackClassName="thermometer-track"
-                        defaultValue={[0, 9999]}
+                        defaultValue={[_minPrice, _maxPrice]}
                         ariaLabel={['Lower thumb', 'Upper thumb']}
                         ariaValuetext={state => `Thumb value ${state.valueNow}`}
                         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                         pearling
                         minDistance={1}
-                        min={0}
-                        max={9999}
+                        min={_minPrice}
+                        max={_maxPrice}
                     />
                 </div>
                 <div className="range-value-info">
-                    <p className="price-from">{minPrice} zł</p>
-                    <p className="price-to">{maxPrice} zł</p>
+                    <p className="price-from">{_minPrice} zł</p>
+                    <p className="price-to">{_maxPrice} zł</p>
                 </div>
             </div>
             <div className="page-nav">
@@ -224,12 +235,14 @@ function CategoryItemsPage() {
     })
     const path = useSelector((state) => state.shop.path)
     const pageNumber = useSelector((state) => state.shop.queryParams.page)
+    const _minPrice = useSelector((state) => state.shop.minPrice)
+    const _maxPrice = useSelector((state) => state.shop.maxPrice)
     const dispatch = useDispatch()
     const finalCategoryName = useLocation().pathname.split('/')[4]
     const navigate = useNavigate()
 
     const [minPrice, setMinPrice] = useState(0)
-    const [maxPrice, setMaxPrice] = useState(9999)
+    const [maxPrice, setMaxPrice] = useState(1000)
     const [loadMode, setLoadMode] = useState(false)
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
 
@@ -243,7 +256,6 @@ function CategoryItemsPage() {
 
     useEffect(() => {
         const path = dispatch(getFinalCategoryPath(urlToCategoryName(finalCategoryName)))
-        // dispatch(clearQueryParams())
         return () => dispatch(clearQueryParams())
     }, [])
 
@@ -268,6 +280,7 @@ function CategoryItemsPage() {
         dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrl)).then(
             () => setLoadMode(false)
         )
+        // dispatch(clearQueryParams())
     }, [queryParams])
 
     return (
@@ -295,14 +308,14 @@ function CategoryItemsPage() {
             </div>
             <div className="items-page-wrapper">
                 {viewportWidth > 1040 && (
-                    <FiltersSideDesktop setLoadMode={setLoadMode} />
+                    <FiltersSideDesktop />
                 )}
                 {viewportWidth <= 1040 && (
-                    <FiltersSideMobile setLoadMode={setLoadMode} />
+                    <FiltersSideMobile />
                 )}
 
                 {viewportWidth > 1040 && (
-                    <SortersSideDesktop minPrice={minPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
+                    <SortersSideDesktop _minPrice={_minPrice} _maxPrice={_maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
                 )}
                 {viewportWidth <= 1040 && (
                     <SortersSideMobile minPrice={minPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
