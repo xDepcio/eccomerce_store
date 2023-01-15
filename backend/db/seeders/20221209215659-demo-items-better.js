@@ -1,4 +1,6 @@
 'use strict';
+const {FinalCategory} = require('../models');
+const {CategoriesGraphicsAttributesItem, AttributesGamingMouse, AttributesProcessor} = require('../models');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,6 +14,28 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
     */
+
+    let descStr = `
+    <div className='specs-desc-image-wrapper'>
+    <img src='https://allegro.stati.pl/AllegroIMG/PRODUCENCI/NVIDIA/RTX-30/rtx-platform.jpg'></img>
+    </div>
+    <section className='img-text'>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda quidem suscipit voluptatum quibusdam porro sit tempora quaerat, odio reprehenderit, eveniet corrupti! Sint nisi aperiam excepturi et nostrum illum officia animi. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae doloribus praesentium ullam possimus accusamus iure sunt atque, fugit, aperiam cupiditate, numquam quasi ea reprehenderit laborum nesciunt dolor molestiae minima dolorum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, accusamus repellat! Voluptatum expedita quod, iusto natus illum nam ipsum laboriosam veniam cumque vitae fugiat, non magni incidunt aspernatur cum similique. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam quaerat voluptatum neque, asperiores provident optio accusamus accusantium, nostrum vel, unde eligendi. Quis possimus odio, atque labore nemo eaque quaerat aperiam.</p>
+    <div className='specs-desc-image-wrapper'>
+    <img src='https://allegro.stati.pl/AllegroIMG/PRODUCENCI/GIGABYTE/GV-N3060EAGLE-OC-12GD-2.0/3-chlodzenie.jpg'></img>
+    </div>
+    </section>
+    <section className='img-text'>
+    <div className='specs-desc-image-wrapper'>
+    <img src='https://allegro.stati.pl/AllegroIMG/PRODUCENCI/NVIDIA/RTX-30/nvidia-studio-05.jpg'></img>
+    </div>
+    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Assumenda quidem suscipit voluptatum quibusdam porro sit tempora quaerat, odio reprehenderit, eveniet corrupti! Sint nisi aperiam excepturi et nostrum illum officia animi. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae doloribus praesentium ullam possimus accusamus iure sunt atque, fugit, aperiam cupiditate, numquam quasi ea reprehenderit laborum nesciunt dolor molestiae minima dolorum. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet, accusamus repellat! Voluptatum expedita quod, iusto natus illum nam ipsum laboriosam veniam cumque vitae fugiat, non magni incidunt aspernatur cum similique. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam quaerat voluptatum neque, asperiores provident optio accusamus accusantium, nostrum vel, unde eligendi. Quis possimus odio, atque labore nemo eaque quaerat aperiam.</p>
+    </section>
+    <div className='specs-desc-image-wrapper'>
+    <img src="https://allegro.stati.pl/AllegroIMG/PRODUCENCI/NVIDIA/RTX-30/frames-win-games-nvidia-reflex-03.jpg"/>
+    </div>
+    `
+
     const choose = (array) => {
       const min = 0
       const max = array.length - 1
@@ -415,36 +439,111 @@ module.exports = {
         }
       },
       {
-        name: 'RTX 3080',
-        category: 'Karty graficzne',
-        producent: choose(producents),
-        memorySize: choose(memorySizes)
+        name: "Logitech G Pro Wireless",
+        category: "Myszki gamingowe",
+        imagesUrl: "https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2020/12/pr_2020_12_16_15_7_53_691_00.jpg",
+        specs: [
+          ["Sensor", "HERO 16K"],
+          ["Weight", "99g"],
+          ["Battery life", "70 hours"]
+        ],
+        attributes: {
+          manufacturer: "Logitech",
+          connectType: "Wireless",
+          dpi: 16000
+        }
       },
       {
-        name: 'RX 6700 XT',
-        category: 'Karty graficzne',
-        producent: choose(producents),
-        memorySize: choose(memorySizes)
+        name: "Razer DeathAdder V2",
+        category: "Myszki gamingowe",
+        imagesUrl: "hthttps://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2020/3/pr_2020_3_26_6_49_24_340_00.jpg",
+        specs: [
+          ["Sensor", "Razer Focus+"],
+          ["Weight", "82g"],
+          ["Ergonomic design", ""]
+        ],
+        attributes: {
+          manufacturer: "Razer",
+          connectType: "Wired",
+          dpi: 20000
+        }
       },
       {
-        name: 'Nvidia Titan',
-        category: 'Karty graficzne',
-        producent: choose(producents),
-        memorySize: choose(memorySizes)
+        name: "SteelSeries Rival 3",
+        category: "Myszki gamingowe",
+        imagesUrl: "https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2020/1/pr_2020_1_20_9_50_4_411_00.jpg",
+        specs: [
+          ["Sensor", "TrueMove Core"],
+          ["Weight", "99g"],
+          ["RGB lighting", ""]
+        ],
+        attributes: {
+          manufacturer: "SteelSeries",
+          connectType: "Wired",
+          dpi: 18000
+        }
       },
       {
-        name: 'Bequiet Pure Dark Rock 4 PRO',
-        category: 'Chłodzenia CPU'
-      },
-      {
-        name: 'SilentiumPC Fera 5 Dual',
-        category: 'Chłodzenia CPU'
-      },
-      {
-        name: 'SilentiumPC Fera 5',
-        category: 'Chłodzenia CPU'
+        name: "Corsair Dark Core RGB/SE",
+        category: "Myszki gamingowe",
+        imagesUrl: "https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2020/4/pr_2020_4_27_12_5_39_526_00.jpg",
+        specs: [
+          ["Sensor", "Pixart 3367"],
+          ["Weight", "121g"],
+          ["9 programmable buttons", ""]
+        ],
+        attributes: {
+          manufacturer: "Corsair",
+          connectType: "Wireless",
+          dpi: 16000
+        }
       }
     ]
+
+    // items.forEach(async (item) => {
+    for(let i = 0; i < items.length; i++) {
+      const item = items[i]
+
+      let itemCategory = await FinalCategory.findOne({
+        where: {
+          name: item.category
+        }
+      })
+
+      let createdItem = await itemCategory.createItem({
+        price: iRandomRange(50, 500),
+        name: item.name,
+        imagesUrl: item.imagesUrl,
+        specs: JSON.stringify(item.specs),
+        description: descStr,
+      })
+
+      switch(item.category) {
+        case "Myszki gamingowe": {
+          await AttributesGamingMouse.create({
+            itemId: createdItem.id,
+            ...item.attributes
+          })
+          break
+        }
+        case "Karty graficzne": {
+          await CategoriesGraphicsAttributesItem.create({
+            itemId: createdItem.id,
+            ...item.attributes
+          })
+          break
+        }
+        case "Procesory": {
+          await AttributesProcessor.create({
+            itemId: createdItem.id,
+            ...item.attributes
+          })
+          break
+        }
+      }
+    }
+    // })
+
   },
 
   async down (queryInterface, Sequelize) {

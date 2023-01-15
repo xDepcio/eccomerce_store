@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toValidUrl } from '../../utils'
 import './MainSubNav.css'
+import categories from '../../data/dummyCategories.js'
 
 const currentPromos = [
     {
@@ -33,44 +34,46 @@ const currentPromos = [
     },
 ]
 
-const mainCategories = [
-    {
-        name: 'Podzespoły komputerowe',
-        categories: [
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
-            ["Chłodzenia komputerowe", ['Chłodzenia wodne', 'Chłodzenia CPU', 'Pasty termoprzewodzące', 'Chłodzenia komputera', 'Inne']],
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
-            ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
-        ]
-    },
-    {
-        name: 'Peryferia'
-    },
-    {
-        name: 'Laptopy'
-    },
-    {
-        name: 'Telefony'
-    },
-    {
-        name: 'Gaming'
-    },
-    {
-        name: 'Sprzęt AGD'
-    },
-    {
-        name: 'Smartwatche'
-    },
-    {
-        name: 'Smartwatche'
-    },
-    {
-        name: 'Smartwatche'
-    },
-]
+// let mainCategories = [
+//     {
+//         name: 'Podzespoły komputerowe',
+//         categories: [
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
+//             ["Chłodzenia komputerowe", ['Chłodzenia wodne', 'Chłodzenia CPU', 'Pasty termoprzewodzące', 'Chłodzenia komputera', 'Inne']],
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM']],
+//             ["Podzespoły komputerowe", ['Karty graficzne', 'Procesory', 'Pamięci RAM', 'Obudowy', 'Dyski', 'Płyty główne', 'Zasilacze', 'Inne']],
+//         ]
+//     },
+//     {
+//         name: 'Peryferia'
+//     },
+//     {
+//         name: 'Laptopy'
+//     },
+//     {
+//         name: 'Telefony'
+//     },
+//     {
+//         name: 'Gaming'
+//     },
+//     {
+//         name: 'Sprzęt AGD'
+//     },
+//     {
+//         name: 'Smartwatche'
+//     },
+//     {
+//         name: 'Smartwatche'
+//     },
+//     {
+//         name: 'Smartwatche'
+//     },
+// ]
+
+const mainCategories = categories
 
 function MainSubNav() {
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth)
@@ -122,17 +125,17 @@ function MainSubNav() {
                                     mainCatEle.className = ''
                                 }} className='categories-all-menu-wrapper'>
                                     <div className='categories-all-menu'>
-                                    {mainCategories[choosenCateogryIndex].categories?.map((e, i) => {
+                                    {mainCategories[choosenCateogryIndex].subCategories?.map((subCat, i) => {
                                         return (
                                             <ul key={i}><li onClick={() => {
-                                                navigate(toValidUrl(`/kategorie/${toValidUrl(mainCategories[choosenCateogryIndex].name)}/${e[0]}`))
-                                            }}>{e[0]}</li>
-                                                {e[1].map((subEle, _i) => {
+                                                navigate(toValidUrl(`/kategorie/${toValidUrl(mainCategories[choosenCateogryIndex].name)}/${subCat.name}`))
+                                            }}>{subCat.name}</li>
+                                                {subCat.finalCategories.map((finalCat, _i) => {
                                                     return (
                                                         <li onClick={() => {
-                                                            navigate(toValidUrl(`/kategorie/${toValidUrl(mainCategories[choosenCateogryIndex].name)}/${e[0]}/${subEle}`))
+                                                            navigate(toValidUrl(`/kategorie/${toValidUrl(mainCategories[choosenCateogryIndex].name)}/${subCat.name}/${finalCat.name}`))
                                                         }}
-                                                        key={_i}>{subEle}</li>
+                                                        key={_i}>{finalCat.name}</li>
                                                     )
                                                 })}
                                             </ul>

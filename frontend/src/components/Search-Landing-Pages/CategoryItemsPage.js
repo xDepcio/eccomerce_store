@@ -7,7 +7,8 @@ import './CategoryItemsPage.css'
 import ReactSlider from 'react-slider'
 import {faArrowsAlt, faArrowsSplitUpAndLeft, faArrowsUpDown, faClose, faGears, faSquareShareNodes, faStar, faStarHalf, faTh, faThLarge, faThList} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import GraphicsCardFilter from "./CategoriesFilters/GraphcisCardFilter"
+import GraphicsCardFilter from "./CategoriesFilters/FiltersSelector"
+import FiltersSelector from "./CategoriesFilters/FiltersSelector"
 
 
 function FiltersSideDesktop({setLoadMode}) {
@@ -16,7 +17,7 @@ function FiltersSideDesktop({setLoadMode}) {
                 <div className="page-filter-header">
                     <p>Filtrowanie</p>
                 </div>
-            <GraphicsCardFilter setLoadMode={setLoadMode} />
+            <FiltersSelector setLoadMode={setLoadMode} />
         </div>
     )
 }
@@ -41,7 +42,7 @@ function FiltersSideMobile({setLoadMode}) {
         <>
             <>
                 <div id="mobile-filters" className="mobile-filters-expanded">
-                    <GraphicsCardFilter handleExpandMobileFilters={handleExpandMobileFilters} mobile={true} setLoadMode={setLoadMode} />
+                    <FiltersSelector handleExpandMobileFilters={handleExpandMobileFilters} mobile={true} setLoadMode={setLoadMode} />
                 </div>
                 <div id="mobile-filters-darkener" onClick={() => handleExpandMobileFilters('close')} className="darken-mobile-filters"></div>
             </>
@@ -82,14 +83,19 @@ function SortersSideDesktop({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                             setMinPrice(val[0])
                             setMaxPrice(val[1])
                         }}
-                        onAfterChange={(val) => {}}
+                        onAfterChange={(val) => {
+                            dispatch(setQueryParam('minPrice', val[0]))
+                            dispatch(setQueryParam('maxPrice', val[1]))
+                        }}
                         trackClassName="thermometer-track"
-                        defaultValue={[0, 100]}
+                        defaultValue={[0, 9999]}
                         ariaLabel={['Lower thumb', 'Upper thumb']}
                         ariaValuetext={state => `Thumb value ${state.valueNow}`}
                         renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
                         pearling
                         minDistance={1}
+                        min={0}
+                        max={9999}
                     />
                 </div>
                 <div className="range-value-info">
@@ -208,6 +214,8 @@ function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
 
 
 function CategoryItemsPage() {
+    const queryParams = useSelector((state) => state.shop.queryParams)
+
     const searchedItems = useSelector((state) => {
         if(state.shop.searchedItems) {
             return Object.values(state.shop.searchedItems)
@@ -236,6 +244,26 @@ function CategoryItemsPage() {
     useEffect(() => {
         const path = dispatch(getFinalCategoryPath(urlToCategoryName(finalCategoryName)))
     }, [])
+
+    useEffect(() => {
+        console.log('QUERY CHANGED')
+        let query = {...queryParams}
+
+        let _activeFilters = query.filters
+        let normalizedFilters = {}
+        for(const [filterName, filterValues] of Object.entries(_activeFilters)) {
+            if(filterValues.length !== 0) {
+                normalizedFilters[filterName] = filterValues
+            }
+        }
+        delete query.filters
+        query = {...query, ...normalizedFilters}
+
+        const paramsUrl = new URLSearchParams({...query})
+        console.log(paramsUrl.toString(), 'PRMSURL')
+
+        dispatch(getFilteredCategoryItems(urlToCategoryName(finalCategoryName), paramsUrl))
+    }, [queryParams])
 
     return (
         <>

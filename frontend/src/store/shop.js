@@ -20,6 +20,8 @@ const ADD_CART_ITEM = 'shop/addCartItem'
 const REMOVE_CART_ITEM = 'shop/removeCartItem'
 const LOAD_CART = 'shop/loadCart'
 const LOAD_DELIVERIES = 'shop/loadDeliveries'
+const ADD_SEARCH_FILTER = 'shop/addSearchFilter'
+const REMOVE_SEARCH_FILTER = 'shop/removeSearchFilter'
 
 // Normal action creator
 
@@ -158,6 +160,21 @@ const loadDeliveries = (deliveries) => {
     }
 }
 
+export const addSearchFilter = (filterName, filterValue) => {
+    return {
+        type: ADD_SEARCH_FILTER,
+        filterName,
+        filterValue
+    }
+}
+
+export const removeSearchFilter = (filterName, filterValue) => {
+    return {
+        type: REMOVE_SEARCH_FILTER,
+        filterName,
+        filterValue
+    }
+}
 
 // Thunk action creators
 export const getCategories = (type, parent) => async (dispatch) => {
@@ -305,7 +322,8 @@ const initialState = {
     categories: null,
     reviews: [],
     queryParams: {
-        page: 1
+        page: 1,
+        filters: {}
     },
     cart: {
         items: [],
@@ -381,6 +399,30 @@ const shopReducer = (state = initialState, action) => {
         case LOAD_USER_ITEM_REVIEW: {
             const newState = {...state}
             newState.userItemReview = action.review
+            return newState
+        }
+        case ADD_SEARCH_FILTER: {
+            const newState = {...state}
+            const currFilters = newState.queryParams.filters
+
+            if(currFilters[action.filterName]) {
+                currFilters[action.filterName] = [...currFilters[action.filterName], action.filterValue]
+            }
+            else {
+                currFilters[action.filterName] = [action.filterValue]
+            }
+            newState.queryParams = {...newState.queryParams}
+            return newState
+        }
+        case REMOVE_SEARCH_FILTER: {
+            const newState = {...state}
+            const currFilters = newState.queryParams.filters
+
+            currFilters[action.filterName].splice(
+                currFilters[action.filterName].indexOf(action.filterValue), 1
+            )
+
+            newState.queryParams = {...newState.queryParams}
             return newState
         }
         case SET_QUERY_PARAM: {

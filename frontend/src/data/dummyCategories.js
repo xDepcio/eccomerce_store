@@ -1,4 +1,4 @@
-module.exports = [
+const categories = [
     {
       name: 'Podzespoły komputerowe',
       subCategories: [
@@ -69,3 +69,5 @@ module.exports = [
       ]
     }
   ]
+
+  export default categories

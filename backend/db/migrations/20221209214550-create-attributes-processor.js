@@ -18,6 +18,9 @@ module.exports = {
       coresCount: {
         type: Sequelize.INTEGER
       },
+      itemId: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

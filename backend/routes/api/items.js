@@ -1,5 +1,9 @@
 const express = require('express')
-const {Item, FinalCategory, SubCategory, MainCategory, UserVoteReview, ItemSpec, CategoriesGraphicsAttributesItem, Review, sequelize} = require('../../db/models')
+const {Item, FinalCategory, SubCategory,
+    MainCategory, UserVoteReview, ItemSpec,
+    CategoriesGraphicsAttributesItem,
+    Review, sequelize, AttributesGamingMouse,
+    AttributesProcessor} = require('../../db/models')
 const asyncHandler = require('express-async-handler')
 const { requireAuth } = require('../../utils/auth')
 const { Op } = require('sequelize')
@@ -325,6 +329,7 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
 
     // const payload = {...req.query}
     // console.log(payload)
+    console.log(req.params, 'PARAMS')
 
     const formatFilterQuery = (payload) => {
         const payloadKeys = Object.keys(payload)
@@ -377,13 +382,25 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     let model
     // console.log(req.params.finalCategoryName, 'params')
     switch (req.params.finalCategoryName) {
-        case 'Karty graficzne':
+        case 'Karty graficzne': {
             model = CategoriesGraphicsAttributesItem
             console.log('model', model)
             break;
-
-        default:
+        }
+        case 'Procesory': {
+            model = AttributesProcessor
+            console.log('model', model)
             break;
+        }
+        case 'Myszki gamingowe': {
+            model = AttributesGamingMouse
+            console.log('model', model)
+            break;
+        }
+        default: {
+            console.log('model not FOUND ERRR')
+            break;
+        }
     }
 
     let order
@@ -457,6 +474,41 @@ router.get('/:finalCategoryName', asyncHandler(async (req, res) => {
     // res.json(items)
     // res.json([...items.map((e) => e.Item.dataValues)])
 }))
+
+// get attributes associated to final category
+// router.get('/:finalCategoryName/attributes', asyncHandler(async (req, res) => {
+//     let model
+//     // console.log(req.params.finalCategoryName, 'params')
+//     switch (req.params.finalCategoryName) {
+//         case 'Karty graficzne': {
+//             model = CategoriesGraphicsAttributesItem
+//             console.log('model', model)
+//             break;
+//         }
+//         case 'Procesory': {
+//             model = AttributesProcessor
+//             console.log('model', model)
+//             break;
+//         }
+//         case 'Myszki gamingowe': {
+//             model = AttributesGamingMouse
+//             console.log('model', model)
+//             break;
+//         }
+//         default: {
+//             console.log('model not FOUND ERRR')
+//             break;
+//         }
+//     }
+
+//     let data = Object.keys(model.rawAttributes)
+//     data = data.filter((e) => {
+//         return !['createdAt', 'updatedAt', 'id', 'itemId'].includes(e)
+//     })
+//     console.log(data, 'TTT')
+//     res.json(data)
+// }))
+
 
 
 module.exports = router

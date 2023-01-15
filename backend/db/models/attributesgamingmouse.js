@@ -11,12 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      AttributesGamingMouse.belongsTo(models.Item, {
+        foreignKey: 'itemId'
+      })
     }
   }
   AttributesGamingMouse.init({
     manufacturer: DataTypes.STRING,
     connectType: DataTypes.STRING,
-    dpi: DataTypes.INTEGER
+    dpi: DataTypes.INTEGER,
+    itemId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'AttributesGamingMouse',

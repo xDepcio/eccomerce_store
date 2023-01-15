@@ -11,12 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      AttributesProcessor.belongsTo(models.Item, {
+        foreignKey: 'itemId'
+      })
     }
   }
   AttributesProcessor.init({
     manufacturer: DataTypes.STRING,
     socketType: DataTypes.STRING,
-    coresCount: DataTypes.INTEGER
+    coresCount: DataTypes.INTEGER,
+    itemId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'AttributesProcessor',
