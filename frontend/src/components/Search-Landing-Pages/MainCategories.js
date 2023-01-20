@@ -15,6 +15,11 @@ function MainCategories() {
 
     console.log(url.pathname.split('/'))
 
+    async function goToSubPage(categoryName, url) {
+        const data = await dispatch(getCategories('subCategories', categoryName))
+        navigate(url)
+    }
+
     useEffect(() => {
         const data = dispatch(getCategories('mainCategories', urlToCategoryName(url.pathname.split('/')[1])))
     }, [])
@@ -40,7 +45,11 @@ function MainCategories() {
             <div className="main-categories-holder">
                 {mainCategories?.map((e, i) => {
                     return (
-                        <div onClick={() => navigate(toValidUrl(e.name))} className="single-main-category" key={i}>
+                        <div onClick={() => {
+                            // navigate(toValidUrl(e.name))
+                            let url = toValidUrl(e.name)
+                            goToSubPage(e.name, url)
+                            }} className="single-main-category" key={i}>
                             <div className="single-main-category-image-holder">
                                 <img src="https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2022/1/pr_2022_1_3_20_8_31_63_01.jpg"></img>
                             </div>

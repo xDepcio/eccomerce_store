@@ -1,5 +1,6 @@
 import './Filters.css'
 import FilterSection from './FilterSection'
+import FilterSectionExpandable from './FilterSectionExpandable'
 
 function GraphcisCardFilter() {
     return (
@@ -23,6 +24,8 @@ function GraphcisCardFilter() {
                 ['memorySize', '16', '16'],
                 ['memorySize', '24', '24']
             ]} />
+
+            <FilterSectionExpandable />
         </>
     )
 }

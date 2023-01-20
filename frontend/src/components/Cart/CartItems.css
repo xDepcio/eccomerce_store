@@ -63,7 +63,7 @@
 .in-cart-item-img > img {
     max-width: 110px;
     border-radius: 10px;
-
+    cursor: pointer;
 }
 
 .in-cart-buy-button {
@@ -104,6 +104,11 @@
 
 .in-cart-item-name > p {
     margin-right: 30px;
+}
+
+.in-cart-item-name > p:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }
 
 .in-cart-icon-change-amount {

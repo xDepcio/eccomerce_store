@@ -9,6 +9,8 @@ import {faArrowsAlt, faArrowsSplitUpAndLeft, faArrowsUpDown, faClose, faGears, f
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import GraphicsCardFilter from "./CategoriesFilters/FiltersSelector"
 import FiltersSelector from "./CategoriesFilters/FiltersSelector"
+import DropDownMenuPages from './SortersSubComponents/DropDownMenuPages'
+import DropDownMenuSortBy from "./SortersSubComponents/DropDownMenuSortBy"
 
 
 function FiltersSideDesktop() {
@@ -61,6 +63,16 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
     const [searchParams, setSearchParams] = useSearchParams()
     const dispatch = useDispatch()
     const pageNumber = useSelector((state) => state.shop.queryParams.page)
+    const [sortBy, setSortBy] = useState()
+    const [size, setSize] = useState()
+
+    useEffect(() => {
+        dispatch(setQueryParam('sortBy', sortBy))
+    }, [sortBy])
+
+    useEffect(() => {
+        dispatch(setQueryParam('size', size))
+    }, [size])
     // const _minPrice = useSelector((state) => state.shop.minPrice || 0)
     // const _maxPrice = useSelector((state) => state.shop.maxPrice || 10)
     // const [__minPrice, __setMinPrice] = useState(_minPrice)
@@ -75,7 +87,16 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
 
     return (
         <div className="page-sorter">
-            <select onChange={(e) => {
+            <div className="basic-sorters-wrapper">
+                <div className="basic-sorters-positioner">
+                    <DropDownMenuSortBy entries={[
+                        ['Od najpopularniejszych', 'popularity'],
+                        ['Od najtańszych', 'price-asc'],
+                        ['Od najdroższych', 'price-desc'],
+                        ]} stateUpdater={setSortBy} />
+                </div>
+            </div>
+            {/* <select onChange={(e) => {
                 dispatch(setQueryParam('sortBy', e.currentTarget.value))
                 // dispatch(setSortBy(e.currentTarget.value))
 
@@ -83,7 +104,7 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
                 <option value={'popularity'}>Od najpopularniejszych</option>
                 <option value={'price-asc'}>Od najtańszych</option>
                 <option value={'price-desc'}>Od najdroższych</option>
-            </select>
+            </select> */}
             <div className="price-range">
                 <div className="in-price-range-all-slider-wrapper">
                     <p className="price-range-header">Cena:</p>
@@ -115,11 +136,14 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
                 </div>
             </div>
             <div className="page-nav">
-                <select onChange={(e) => dispatch(setQueryParam('size', e.currentTarget.value))} className="page-size-selector">
+                <DropDownMenuPages entries={
+                    [[20, 20], [40, 40], [60, 60]
+                    ]} stateUpdater={setSize} />
+                {/* <select onChange={(e) => dispatch(setQueryParam('size', e.currentTarget.value))} className="page-size-selector">
                     <option value={'20'}>20</option>
                     <option value={'40'}>40</option>
                     <option value={'60'}>60</option>
-                </select>
+                </select> */}
                 <div className="page-selector">
                     <div onClick={() => dispatch(setQueryParam('page', Math.max(pageNumber - 1, 1)))} className="previous-page">{'<'}</div>
                     <div className="current-page"><span>{pageNumber}</span></div>
@@ -133,6 +157,11 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
 function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
 
     const dispatch = useDispatch()
+    const [sortBy, setSortBy] = useState()
+
+    useEffect(() => {
+        dispatch(setQueryParam('sortBy', sortBy))
+    }, [sortBy])
 
     const handleExpandMobileSorters = (action) => {
         const sortersEle = document.getElementById('mobile-sorters')
@@ -161,16 +190,25 @@ function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                         <FontAwesomeIcon onClick={() => handleExpandMobileSorters('close')} className='in-mobile-sorters-close' icon={faClose} />
                     </div>
                     <div>
+                        <div className="sorting-mobile-header">
+                            <FontAwesomeIcon icon={faArrowsUpDown} />
+                            <p>Sortuj po:</p>
+                        </div>
                         <div className="sorting-mobile-view">
-                            <div className="sorting-mobile-header">
+                            {/* <div className="sorting-mobile-header">
                                 <FontAwesomeIcon icon={faArrowsUpDown} />
                                 <p>Sortuj:</p>
-                            </div>
-                            <select className="sorting-mobile-select" onChange={(e) => dispatch(setQueryParam('sortBy', e.currentTarget.value))}>
+                            </div> */}
+                            <DropDownMenuSortBy entries={[
+                                ['Popularność', 'popularity'],
+                                ['Od najtańszych', 'price-asc'],
+                                ['Od najdroższych', 'price-desc']
+                                ]} stateUpdater={setSortBy} />
+                            {/* <select className="sorting-mobile-select" onChange={(e) => dispatch(setQueryParam('sortBy', e.currentTarget.value))}>
                                 <option value={'popularity'}>Popularność</option>
                                 <option value={'price-asc'}>Od najtańszych</option>
                                 <option value={'price-desc'}>Od najdroższych</option>
-                            </select>
+                            </select> */}
                         </div>
                         <div style={{
                             display: 'flex',

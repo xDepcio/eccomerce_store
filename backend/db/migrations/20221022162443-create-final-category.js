@@ -17,6 +17,10 @@ module.exports = {
         allowNull: false,
         references: {model: 'SubCategories'}
       },
+      categoryImg: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

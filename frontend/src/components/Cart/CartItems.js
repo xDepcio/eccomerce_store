@@ -43,9 +43,9 @@ function CartItems({setDisplayCartComponent}) {
                     return (
                         <div key={i} className='item-in-cart'>
                             <div className='in-cart-item-img'>
-                                <img src={cartItemsSpecs[e.itemId]?.imagesUrl} />
+                                <img onClick={() => navigate(`/produkty/${e.itemId}`)} src={cartItemsSpecs[e.itemId]?.imagesUrl} />
                             </div>
-                            <div className='in-cart-item-name'>
+                            <div onClick={() => navigate(`/produkty/${e.itemId}`)} className='in-cart-item-name'>
                                 <p>{cartItemsSpecs[e.itemId]?.name}</p>
                             </div>
                             <div className='in-cart-item-price'>

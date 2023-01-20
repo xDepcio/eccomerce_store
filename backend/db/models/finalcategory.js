@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   FinalCategory.init({
     name: DataTypes.STRING,
-    subCategoryId: DataTypes.INTEGER
+    subCategoryId: DataTypes.INTEGER,
+    categoryImg: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'FinalCategory',

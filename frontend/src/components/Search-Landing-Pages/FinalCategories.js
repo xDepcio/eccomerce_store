@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 import { getCategories } from "../../store/shop"
 import { categoriesMapped, toValidUrl, urlToCategoryName } from "../../utils"
+import {Grid} from 'react-loader-spinner'
 
 function FinalCategories() {
     const finalCategories = useSelector((state) => state.shop.finalCategories)
@@ -27,8 +28,29 @@ function FinalCategories() {
 
     }, [])
 
-    if(!loaded) {
-        return (<div></div>)
+    if(!loaded && false) {
+        return (<></>
+            // <div style={{
+            //     display: 'flex',
+            //     justifyContent: 'center',
+            //     alignItems: 'center',
+            //     height: '500px',
+            //     width: '100%',
+            //     padding: '50px',
+            //     boxSizing: 'border-box'
+            // }} className={'grid-loader'}>
+            //     <Grid
+            //         height="150%"
+            //         width="150%"
+            //         color="rgb(222, 222, 222)"
+            //         ariaLabel="grid-loading"
+            //         radius="12.5"
+            //         wrapperStyle={{}}
+            //         wrapperClass=""
+            //         visible={true}
+            //     />
+            // </div>
+        )
     }
 
     return (
