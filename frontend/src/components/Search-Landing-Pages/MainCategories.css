@@ -74,10 +74,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 168px
 }
 
 .single-main-category-image-holder > img {
-    width: 65%
+    /* width: 65%; */
+    max-width: 168px;
 }
 
 .single-cat-main-name {
@@ -154,5 +156,3 @@
         font-size: 12px;
     }
 }
-
-

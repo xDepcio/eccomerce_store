@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { csrfFetch } from '../../store/csrf'
 import { getAllUserAddresses, getDefaultUserAddress } from '../../store/session'
 import { getCartItems, getDeliveries } from '../../store/shop'
 import './Delivery.css'
@@ -18,6 +19,42 @@ function Delivery({setDisplayCartComponent}) {
     const user = useSelector((state) => state.session.user)
     const defaultAddress = useSelector((state) => state.session.user.defaultAddress)
 
+    async function handlePayment() {
+        const pricesIds = Object.values(cartItemsSpecs).map((item) => item.stripePriceId)
+        console.log(pricesIds)
+        const res = await csrfFetch('/api/payment/create-checkout-session', {
+            method: 'POST',
+            body: JSON.stringify({
+                pricesIds: pricesIds,
+                address: {
+                    firstName,
+                    lastName,
+                    city,
+                    postCode,
+                    street,
+                    flatNumber,
+                    phoneNumber,
+                    email
+                }
+            })
+        })
+        const data = await res.json()
+        console.log(data)
+        window.location.href = data.stripeUrl
+    }
+
+    useEffect(() => {
+        if(defaultAddress) {
+            setFirstName(defaultAddress?.firstName)
+            setLastName(defaultAddress?.lastName)
+            setCity(defaultAddress?.city)
+            setPostCode(defaultAddress?.postCode)
+            setFlatNumber(defaultAddress?.flatNumber)
+            setPhoneNumber(defaultAddress?.phoneNumber)
+            setEmail(defaultAddress?.email)
+            setStreet(defaultAddress?.street)
+        }
+    }, [defaultAddress])
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -136,7 +173,7 @@ function Delivery({setDisplayCartComponent}) {
                         </div>
 
                     </div>
-                    <button className='pay-button'>Zapłać<FontAwesomeIcon icon={faCreditCard} /></button>
+                    <button onClick={handlePayment} className='pay-button'>Zapłać<FontAwesomeIcon icon={faCreditCard} /></button>
                 </div>
             </div>
             <section className='delivery-type-section'>

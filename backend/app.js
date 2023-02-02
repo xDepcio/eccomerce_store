@@ -4,7 +4,10 @@ const cors = require('cors');
 const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-const { ValidationError } = require('sequelize');
+const { ValidationError, Op } = require('sequelize');
+const bodyParser = require('body-parser');
+const { Item, Review, sequelize, User, Address, Order} = require('./db/models')
+
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
@@ -14,7 +17,14 @@ const app = express();
 
 app.use(morgan('dev'));
 app.use(cookieParser());
-app.use(express.json());
+app.use((req, res, next) => {
+    if (req.originalUrl === '/webhook') {
+      next();
+    } else {
+      express.json()(req, res, next);
+    }
+  });
+// app.use(express.json());
 // Security Middleware
 if (!isProduction) {
     // enable cors only in development
@@ -27,6 +37,84 @@ app.use(
         policy: "cross-origin"
     })
 );
+
+// Stripe webhook
+const fulfillOrder = async (session, lineItems) => {
+
+    console.log('lineItems', lineItems)
+    console.log('lineItems.data', lineItems.data)
+    console.log('session', session)
+    const metadata = session.metadata
+    const itemsPriceIds = lineItems.data.map((lineItem) => lineItem.price.id)
+    const items = await Item.findAll({
+        where: {
+            stripePriceId: {
+                [Op.in]: itemsPriceIds
+            }
+        },
+        raw: true
+    })
+    console.log('meta', metadata)
+    console.log('items', items)
+    const userAddress = await User.findByPk(metadata.userId, {
+        include: {
+            model: Address,
+            where: {
+                firstName: metadata.firstName,
+                lastName: metadata.lastName,
+                city: metadata.city,
+                street: metadata.street,
+                postCode: metadata.postCode,
+                flatNumber: metadata.flatNumber,
+                phoneNumber: metadata.phoneNumber,
+                email: metadata.email
+            }
+        }
+    })
+    console.log('US', userAddress)
+    const itemsIds = items.map((item) => item.id)
+    await Order.create({
+        userId: metadata.userId,
+        addressId: userAddress.id,
+        items: itemsIds.join(',')
+    })
+}
+
+const stripe = require('stripe')('sk_test_51LmMTSGEtDbpNSeiV5SEzavQFyUOlLrIVtuSWh97G3dXJ6ZlIV96F6mev5RSRgFiWW3gBNZeyovXqW6GtIS0XuQk00ieRFhVEJ');
+const endpointSecret = 'whsec_5dd7d8546b290a40c2bb1d8944145aed3ac86d118633fcf780ed2c6601828336';
+app.post('/webhook', bodyParser.raw({type: 'application/json'}), async (request, response) => {
+    console.log('webhoooooooooooook')
+
+    const payload = request.body;
+    const sig = request.headers['stripe-signature'];
+
+    let event;
+
+    try {
+      console.log('==================')
+      event = stripe.webhooks.constructEvent(payload, sig, endpointSecret);
+    } catch (err) {
+      console.log(err.message)
+      return response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+    console.log('EV', event)
+
+    // Handle the checkout.session.completed event
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object;
+      const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
+        session.id,
+        {
+          expand: ['line_items'],
+        }
+      );
+
+      // Fulfill the purchase...
+      fulfillOrder(session, sessionWithLineItems.line_items);
+    }
+
+    response.status(200);
+  });
 
 // Set the _csrf token and create req.csrfToken method
 app.use(

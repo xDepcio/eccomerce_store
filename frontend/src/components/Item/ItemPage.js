@@ -203,7 +203,7 @@ function ItemPage() {
                     <h3>Specyfikacja</h3>
                     <div className='specs-wrapper'>
                         <ul>
-                            {item?.specs.map((e, i) => {
+                            {item?.specs?.map((e, i) => {
                                 return (
                                     <li key={i}>
                                         <span>{e[0]}</span>

@@ -62,7 +62,8 @@ function SubCategories() {
                             goToSubPage(e.name, url)
                             }} className="single-main-category" key={i}>
                             <div className="single-main-category-image-holder">
-                                <img src="https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2022/1/pr_2022_1_3_20_8_31_63_01.jpg"></img>
+                                <img src={e.categoryImg}></img>
+                                {/* <img src="https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2022/1/pr_2022_1_3_20_8_31_63_01.jpg"></img> */}
                             </div>
                             <p className="single-cat-main-name">{e.name}</p>
                             <p className="single-cat-main-count">(1579)</p>

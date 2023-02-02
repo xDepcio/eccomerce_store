@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     imagesUrl: DataTypes.TEXT,
     description: DataTypes.TEXT,
     specs: DataTypes.TEXT,
+    stripePriceId: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Item',

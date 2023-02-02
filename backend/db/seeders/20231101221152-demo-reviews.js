@@ -20,35 +20,35 @@ module.exports = {
         reviewerFirstName: 'Aleksander',
         reviewContent: 'Review item6 Aleksander',
         reviewerId: 1,
-        itemId: 6,
+        itemId: 1,
         rating: 5
       },
       {
         reviewerFirstName: 'Mateusz',
         reviewContent: 'Review item6 Mateusz',
         reviewerId: 2,
-        itemId: 6,
+        itemId: 1,
         rating: 3
       },
       {
         reviewerFirstName: 'Janusz',
         reviewContent: 'Review item6 Janusz',
         reviewerId: 3,
-        itemId: 6,
+        itemId: 2,
         rating: 4
       },
       {
         reviewerFirstName: 'Norbert',
         reviewContent: 'Review item6 Norbert',
         reviewerId: 4,
-        itemId: 7,
+        itemId: 3,
         rating: 2
       },
       {
         reviewerFirstName: 'Tomasz',
         reviewContent: 'Review item6 Tomasz',
         reviewerId: 5,
-        itemId: 7,
+        itemId: 3,
         rating: 1
       }
     ]

@@ -5,6 +5,7 @@ module.exports = [
       subCategories: [
         {
           name: 'Części komputerowe',
+          imgUrl: 'https://cdn.x-kom.pl/i/setup/images/prod/big/product-new-big,,2022/1/pr_2022_1_3_20_8_31_63_01.jpg',
           finalCategories: [
             {
               name: 'Karty graficzne',
@@ -38,7 +39,7 @@ module.exports = [
             },
             {
               name: 'Chłodzenia PC',
-              imgUrl: 'https://prod-api.mediaexpert.pl/api/images/gallery/thumbnails/images/77/770902/Wentylator-SILENTIUM-PC-Zephyr-92-front.jpg'
+              imgUrl: 'https://s1.sprzedawacz.pl/images/202103/07/300_20210307210149_518_ad3e0_4.jpg'
             },
             {
               name: 'Chłodzenia wodne',
@@ -58,6 +59,7 @@ module.exports = [
       subCategories: [
         {
           name: 'Klawiatury',
+          imgUrl: 'https://a.allegroimg.com/original/1136f9/0e13ebd34c79a718884f2bfa3ec7/Klawiatura-65-RK68-RK837-Mechaniczna-RED-HOT-SWAP',
           finalCategories: [
             {
               name: 'Klawiatury bezprzewodowe',

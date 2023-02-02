@@ -30,7 +30,8 @@
     "pg": "^8.8.0",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0",
-    "sqlite3": "^5.1.2"
+    "sqlite3": "^5.1.2",
+    "stripe": "^11.7.0"
   },
   "devDependencies": {
     "dotenv-cli": "^6.0.0",

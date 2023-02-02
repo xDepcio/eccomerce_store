@@ -7,6 +7,7 @@ import { faBook, faCheck, faExternalLink, faPen, faPowerOff } from '@fortawesome
 import { getAllUserAddresses, getDefaultUserAddress, logoutUser } from "../../store/session"
 import Addresses from "./AccountMenus/Addresses"
 import Security from "./AccountMenus/Security"
+import Orders from "./AccountMenus/Orders"
 
 
 function UserPage() {
@@ -37,6 +38,10 @@ function UserPage() {
             }
             case 'security': {
                 setSelectedMenuComponent(<Security />)
+                break
+            }
+            case 'orders': {
+                setSelectedMenuComponent(<Orders />)
                 break
             }
         }

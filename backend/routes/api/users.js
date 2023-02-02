@@ -5,7 +5,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, verifyLoginUser } = require('../../utils/auth');
-const { User, Review, UserVoteReview, Address } = require('../../db/models');
+const { User, Review, UserVoteReview, Address, Order } = require('../../db/models');
 
 
 const router = express.Router()
@@ -168,6 +168,26 @@ router.patch('/', requireAuth, verifyLoginUser, asyncHandler(async (req, res) =>
     await user.save()
     console.log(user)
     return res.json(user)
+}))
+
+// Get user order
+router.get('/orders', asyncHandler(async (req, res) => {
+    const userOrders = await Order.findAll({
+        include: [
+            {
+                model: User,
+                required: true,
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt']
+                }
+            },
+            {
+                model: Address
+            }
+        ]
+    })
+
+    res.json(userOrders)
 }))
 
 
