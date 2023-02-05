@@ -5,7 +5,8 @@ const { handleValidationErrors } = require('../../utils/validation');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth, verifyLoginUser } = require('../../utils/auth');
-const { User, Review, UserVoteReview, Address, Order } = require('../../db/models');
+const { User, Review, UserVoteReview, Address, Order, Item } = require('../../db/models');
+const { Op } = require('sequelize');
 
 
 const router = express.Router()
@@ -171,23 +172,59 @@ router.patch('/', requireAuth, verifyLoginUser, asyncHandler(async (req, res) =>
 }))
 
 // Get user order
-router.get('/orders', asyncHandler(async (req, res) => {
-    const userOrders = await Order.findAll({
+router.get('/orders', requireAuth, asyncHandler(async (req, res) => {
+    const userOrders = await User.findByPk(req.user.id, {
         include: [
             {
-                model: User,
-                required: true,
-                attributes: {
-                    exclude: ['createdAt', 'updatedAt']
-                }
-            },
-            {
-                model: Address
+                model: Order
             }
         ]
     })
 
-    res.json(userOrders)
+    for(let j = 0; j < userOrders.Orders.length; j++) {
+        console.log('============')
+        const items = userOrders.Orders[j].items.split(':')
+        console.log('items', items)
+        let itemsIds = {}
+        items.forEach((ele, i) => {
+            const [id, price, count] = ele.split(',')
+            itemsIds[id] = {price, count}
+        })
+        console.log(itemsIds)
+
+        const orderItems = await Item.findAll({
+            where: {
+                id: {
+                    [Op.in]: Object.keys(itemsIds)
+                }
+            },
+            attributes: {
+                exclude: [
+                    'description',
+                    'stripePriceId',
+                    'specs',
+                    'createdAt',
+                    'updatedAt'
+                ]
+            },
+            raw: true
+        })
+
+        for(let item of orderItems) {
+            item.boughtCount = parseInt(itemsIds[item.id].count)
+            item.boughtPrice = parseInt(itemsIds[item.id].price)
+        }
+        console.log('bewtter', orderItems)
+        userOrders.dataValues.Orders[j].dataValues.boughtItems = orderItems
+
+        let totalOrderPrice = 0
+        for(let {price, count} of Object.values(itemsIds)) {
+            totalOrderPrice += count * price
+        }
+        userOrders.dataValues.Orders[j].dataValues.totalOrderPrice = totalOrderPrice
+    }
+
+    res.json(userOrders.Orders)
 }))
 
 

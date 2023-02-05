@@ -17,12 +17,12 @@ module.exports = {
       {
         userId: 1,
         addressId: 1,
-        items: '1,2'
+        items: '1,444,2'
       },
       {
         userId: 1,
         addressId: 1,
-        items: '2,3'
+        items: '2,120,1'
       }
     ])
   },

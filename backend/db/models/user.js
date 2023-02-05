@@ -67,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       through: models.UserVoteReview
     })
     User.hasMany(models.Address, {foreignKey: 'userId'})
+    User.hasMany(models.Order, {foreignKey: 'userId'})
   };
   User.prototype.toSafeObject = function() {
     // const {id, username, email} = this

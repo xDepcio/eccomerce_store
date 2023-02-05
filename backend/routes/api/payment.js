@@ -14,13 +14,33 @@ const YOUR_DOMAIN = 'http://localhost:3006';
 router.post('/create-checkout-session', requireAuth, async (req, res) => {
     console.log(req.body)
     console.log(req.user.id)
-    const pricesIds = req.body.pricesIds
-    const stripeLineItems = pricesIds.map((priceId, i) => {
-        return {
-            price: priceId,
-            quantity: 1
+    async function getPriceIds(items) {
+        const pricesCounts = []
+        for(let i = 0; i < items.length; i++) {
+            const {itemId, count} = items[i]
+            const dbItem = await Item.findByPk(itemId)
+            const priceId = dbItem.stripePriceId
+            pricesCounts.push({
+                price: priceId,
+                quantity: count
+            })
         }
-    })
+
+        return pricesCounts
+    }
+    const boughtItems = req.body.items
+    const stripeLineItems = await getPriceIds(boughtItems)
+    // const stripeLineItems = await boughtItems.map(async (item, i) => {
+    //     const {itemId, count} = item
+    //     const dbItem = await Item.findByPk(itemId)
+    //     const stipePriceId = dbItem.stripePriceId
+
+    //     return {
+    //         price: stipePriceId,
+    //         quantity: count
+    //     }
+    // })
+    console.log('line', stripeLineItems)
 
   const session = await stripe.checkout.sessions.create({
     // line_items: [

@@ -20,12 +20,11 @@ function Delivery({setDisplayCartComponent}) {
     const defaultAddress = useSelector((state) => state.session.user.defaultAddress)
 
     async function handlePayment() {
-        const pricesIds = Object.values(cartItemsSpecs).map((item) => item.stripePriceId)
-        console.log(pricesIds)
+        console.log(cartItems)
         const res = await csrfFetch('/api/payment/create-checkout-session', {
             method: 'POST',
             body: JSON.stringify({
-                pricesIds: pricesIds,
+                items: cartItems,
                 address: {
                     firstName,
                     lastName,

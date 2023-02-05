@@ -72,11 +72,12 @@ const fulfillOrder = async (session, lineItems) => {
         }
     })
     console.log('US', userAddress)
-    const itemsIds = items.map((item) => item.id)
+    const counts = lineItems.data.map((item) => item.quantity)
+    const itemsIdsPrices = items.map((item, i) => [item.id, item.price, counts[i]])
     await Order.create({
         userId: metadata.userId,
         addressId: userAddress.id,
-        items: itemsIds.join(',')
+        items: itemsIdsPrices.join(':')
     })
 }
 

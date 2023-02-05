@@ -49,6 +49,7 @@
 
 .user-profile-menu-expanded {
     padding: 10px;
+    position: relative;
 }
 
 .addresses-field {

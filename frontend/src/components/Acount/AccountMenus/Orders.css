@@ -81,3 +81,36 @@
     color: rgb(50, 50, 50);
     font-weight: 500;
 }
+
+.orders-page-btn {
+    border-radius: 999px;
+    border: 1px solid rgb(224, 224, 224);
+    background-color: white;
+    color: rgb(107, 107, 107);
+    padding: 5px 15px;
+    min-width: 100px;
+    cursor: pointer;
+    transition-duration: 0.1s;
+}
+
+.orders-page-btn:hover:not(.orders-btn-disabled) {
+    background-color: rgb(224, 224, 224);
+}
+
+.orders-pagination-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+    justify-content: center;
+    position: relative;
+    bottom: 0;
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+}
+
+.orders-btn-disabled {
+    opacity: 0.7;
+    cursor: unset;
+}
