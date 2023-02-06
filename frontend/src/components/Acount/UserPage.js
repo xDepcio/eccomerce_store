@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { Outlet, useNavigate } from "react-router-dom"
 import './UserPage.css'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faBook, faCheck, faExternalLink, faPen, faPowerOff } from '@fortawesome/free-solid-svg-icons'
@@ -59,27 +59,42 @@ function UserPage() {
                 <div className="user-profile-main">
                     <ul className="user-profile-menus">
                         <li style={{backgroundColor: selectedMenu === 'defaultData' ? 'rgb(222, 222, 222)' : ''}}
-                        onClick={() => setSelectedMenu('defaultData')}>
+                        onClick={() => {
+                            navigate('/account/orders')
+                            setSelectedMenu('defaultData')
+                        }}>
                             <FontAwesomeIcon icon={faBook} />
                             <p>Podstawowe Dane</p>
                         </li>
                         <li style={{backgroundColor: selectedMenu === 'address' ? 'rgb(222, 222, 222)' : ''}}
-                        onClick={() => setSelectedMenu('address')}>
+                            onClick={() => {
+                                navigate('/account/address')
+                                setSelectedMenu('address')
+                            }}>
                             <FontAwesomeIcon icon={faBook} />
                             <p>Dane adresowe</p>
                         </li>
                         <li style={{backgroundColor: selectedMenu === 'orders' ? 'rgb(222, 222, 222)' : ''}}
-                        onClick={() => setSelectedMenu('orders')}>
+                            onClick={() => {
+                                navigate('/account/orders')
+                                setSelectedMenu('orders')
+                            }}>
                             <FontAwesomeIcon icon={faBook} />
                             <p>Zamówienia</p>
                         </li>
                         <li style={{backgroundColor: selectedMenu === 'reviews' ? 'rgb(222, 222, 222)' : ''}}
-                        onClick={() => setSelectedMenu('reviews')}>
+                        onClick={() => {
+                            navigate('/account/reviews')
+                            setSelectedMenu('reviews')
+                        }}>
                             <FontAwesomeIcon icon={faBook} />
                             <p>Opinie</p>
                         </li>
                         <li style={{backgroundColor: selectedMenu === 'security' ? 'rgb(222, 222, 222)' : ''}}
-                        onClick={() => setSelectedMenu('security')}>
+                        onClick={() => {
+                            navigate('/account/security')
+                            setSelectedMenu('security')
+                        }}>
                             <FontAwesomeIcon icon={faBook} />
                             <p>Bezpieczeństwo</p>
                         </li>
@@ -90,7 +105,8 @@ function UserPage() {
                         </li>
                     </ul>
                     <div className="user-profile-menu-expanded">
-                        {selectedMenuComponent}
+                        {/* {selectedMenuComponent} */}
+                        <Outlet />
                     </div>
                 </div>
             </div>

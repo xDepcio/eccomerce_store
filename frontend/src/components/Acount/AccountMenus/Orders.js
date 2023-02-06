@@ -42,7 +42,14 @@ function Orders() {
                     const formattedDate = date.toLocaleDateString(locale, options);
 
                     return (
-                        <div onClick={() => navigate('/orders')} key={i} className='single-order-wrapper'>
+                        <div onClick={() => navigate(`/account/orders/${order.id}`, {
+                            state: {
+                                order: {
+                                    ...order,
+                                    formattedDate
+                                }
+                            }
+                        })} key={i} className='single-order-wrapper'>
                             <div className='order-common-info'>
                                 <p className='order-status-text'>Zrealizowano</p>
                                 <div>

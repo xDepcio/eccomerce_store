@@ -56,7 +56,7 @@ const fulfillOrder = async (session, lineItems) => {
     })
     console.log('meta', metadata)
     console.log('items', items)
-    const userAddress = await User.findByPk(metadata.userId, {
+    let userAddress = await User.findByPk(metadata.userId, {
         include: {
             model: Address,
             where: {
@@ -71,6 +71,20 @@ const fulfillOrder = async (session, lineItems) => {
             }
         }
     })
+    userAddress = userAddress?.Addresses[0]
+    if(!userAddress) {
+        userAddress = await Address.create({
+            userId: metadata.userId,
+            firstName: metadata.firstName,
+            lastName: metadata.lastName,
+            city: metadata.city,
+            street: metadata.street,
+            postCode: metadata.postCode,
+            flatNumber: metadata.flatNumber,
+            phoneNumber: metadata.phoneNumber,
+            email: metadata.email
+        })
+    }
     console.log('US', userAddress)
     const counts = lineItems.data.map((item) => item.quantity)
     const itemsIdsPrices = items.map((item, i) => [item.id, item.price, counts[i]])

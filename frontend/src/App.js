@@ -15,6 +15,10 @@ import ItemPage from './components/Item/ItemPage';
 import Footer from './components/Footer/Footer';
 import { handleAddToCart } from './utils';
 import Cart from './components/Cart/Cart';
+import Orders from './components/Acount/AccountMenus/Orders';
+import Security from './components/Acount/AccountMenus/Security';
+import Addresses from './components/Acount/AccountMenus/Addresses';
+import SingleOrderPage from './components/Acount/AccountMenus/SingleOrderPage';
 
 
 function App() {
@@ -40,7 +44,15 @@ function App() {
     <Routes>
       <Route exact path='/' element={<MainPage />}/>
       <Route exact path='/login' element={<LoginForm />}/>
-      <Route exact path='/account' element={<UserPage />} />
+      <Route exact path='/account' element={<UserPage />}>
+        {/* <Route index element={<UserPage />} /> */}
+        <Route path='orders'>
+          <Route index element={<Orders />} />
+          <Route path=':id' element={<SingleOrderPage />} />
+        </Route>
+        <Route path='security' element={<Security />} />
+        <Route path='address' element={<Addresses />} />
+      </Route>
       <Route exact path='/kategorie' element={<MainCategories />} />
       <Route exact path='/kategorie/:mainCategories' element={<SubCategories />} />
       <Route exact path='/kategorie/:mainCategories/:subCategories' element={<FinalCategories />} />
