@@ -19,6 +19,7 @@ import Orders from './components/Acount/AccountMenus/Orders';
 import Security from './components/Acount/AccountMenus/Security';
 import Addresses from './components/Acount/AccountMenus/Addresses';
 import SingleOrderPage from './components/Acount/AccountMenus/SingleOrderPage';
+import PaymentSucces from './components/PayementResultPages/PaymentSucces';
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
       <Route exact path='/kategorie/:mainCategories/:subCategories/:finalCategory' element={<CategoryItemsPage />} />
       <Route exact path='/produkty/:itemId' element={<ItemPage />} />
       <Route exact path='/koszyk/*' element={<Cart />} />
+      <Route exact path='/payment/success' element={<PaymentSucces />} />
 
     </Routes>
     <Footer />

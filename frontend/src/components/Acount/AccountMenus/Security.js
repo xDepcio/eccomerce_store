@@ -29,7 +29,7 @@ function Security() {
                             <input value={currentEmail} onChange={(e) => setCurrentEmail(e.currentTarget.value)} placeholder='Aktualny Email' />
                         </p>
                         <p><FontAwesomeIcon icon={faLock} className='user-security-password-icon' />
-                            <input value={currentPassword} onChange={(e) => setCurrentPassword(e.currentTarget.value)} placeholder='Aktualne Hasło' />
+                            <input type={'password'} value={currentPassword} onChange={(e) => setCurrentPassword(e.currentTarget.value)} placeholder='Aktualne Hasło' />
                         </p>
                         <div className='new-email-field-wrapper'>
                             <p className='new-email-field'><FontAwesomeIcon icon={faEnvelope} className='user-security-email-icon' />
@@ -53,11 +53,11 @@ function Security() {
                             <input value={currentEmail} onChange={(e) => setCurrentEmail(e.currentTarget.value)} placeholder='Aktualny Email' />
                         </p>
                         <p><FontAwesomeIcon icon={faLock} className='user-security-password-icon' />
-                            <input value={currentPassword} onChange={(e) => setCurrentPassword(e.currentTarget.value)} placeholder='Aktualne Hasło' />
+                            <input type={'password'} value={currentPassword} onChange={(e) => setCurrentPassword(e.currentTarget.value)} placeholder='Aktualne Hasło' />
                         </p>
                         <div className='new-email-field-wrapper'>
                             <p className='new-email-field'><FontAwesomeIcon icon={faLock} className='user-security-email-icon' />
-                                <input value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} placeholder='Nowe Hasło' />
+                                <input type={'password'} value={newPassword} onChange={(e) => setNewPassword(e.currentTarget.value)} placeholder='Nowe Hasło' />
                             </p>
                         </div>
                         <div className='change-email-button-wrapper'>

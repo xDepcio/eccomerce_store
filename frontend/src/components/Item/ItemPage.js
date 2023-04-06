@@ -42,9 +42,10 @@ function ItemPage() {
         fetchReviews(itemId, sortBy, 1)
     }, [sortBy])
 
-    const userVoteOnReview = (reviewId, voteValue) => {
+    const userVoteOnReview = (reviewId, voteValue, element) => {
         const voteRes = dispatch(sendUserReviewVote(reviewId, voteValue))
         console.log(voteRes)
+        element.currentTarget.style.color = 'rgb(1, 1, 1)'
     }
 
     const handleAddReviewClick = (submittedRating, submittedReviewDesc) => {
@@ -338,13 +339,13 @@ function ItemPage() {
                                                 <p>{ele.createdAt.slice(0, 10).split('-').reverse().join('-')}</p>
                                             </div>
                                             <div className='rating-rev'>
-                                                <div onClick={() => userVoteOnReview(ele.id, 1)} style={{
+                                                <div onClick={(e) => userVoteOnReview(ele.id, 1, e)} style={{
                                                     color: (userReviewsVotes[ele.id] && userReviewsVotes[ele.id].UserVoteReview.voteValue > 0) ? 'rgb(40 40 40)' : ''
                                                 }}>
                                                     <FontAwesomeIcon className='thumbs-up' icon={faThumbsUp} />
                                                     <p>{`(${ele.thumbsUp})`}</p>
                                                 </div>
-                                                <div onClick={() => userVoteOnReview(ele.id, -1)} style={{
+                                                <div onClick={(e) => userVoteOnReview(ele.id, -1, e)} style={{
                                                     color: (userReviewsVotes[ele.id] && userReviewsVotes[ele.id].UserVoteReview.voteValue < 0) ? 'rgb(40 40 40)' : ''
                                                 }}>
                                                     <FontAwesomeIcon className='thumbs-down' icon={faThumbsDown} />

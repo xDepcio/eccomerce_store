@@ -56,7 +56,7 @@ router.post('/create-checkout-session', requireAuth, async (req, res) => {
     },
     line_items: stripeLineItems,
     mode: 'payment',
-    success_url: `${YOUR_DOMAIN}?success=true`,
+    success_url: `${YOUR_DOMAIN}/payment/success`,
     cancel_url: `${YOUR_DOMAIN}?canceled=true`,
   });
 

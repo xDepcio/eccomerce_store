@@ -73,15 +73,7 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
     useEffect(() => {
         dispatch(setQueryParam('size', size))
     }, [size])
-    // const _minPrice = useSelector((state) => state.shop.minPrice || 0)
-    // const _maxPrice = useSelector((state) => state.shop.maxPrice || 10)
-    // const [__minPrice, __setMinPrice] = useState(_minPrice)
-    // const [__maxPrice, __setMaxPrice] = useState(_maxPrice)
 
-    // useEffect(() => {
-    //     __setMinPrice(_minPrice)
-    //     __setMaxPrice(_maxPrice)
-    // }, [_maxPrice, __minPrice])
     const _minPrice = useSelector((state) => state.shop.minPrice)
     const _maxPrice = useSelector((state) => state.shop.maxPrice)
 
@@ -108,27 +100,29 @@ function SortersSideDesktop({ setMinPrice, setMaxPrice}) {
             <div className="price-range">
                 <div className="in-price-range-all-slider-wrapper">
                     <p className="price-range-header">Cena:</p>
-                    <ReactSlider
-                        className="thermometer-slider"
-                        thumbClassName="thermometer-thumb"
-                        onChange={(val) => {
-                            setMinPrice(val[0])
-                            setMaxPrice(val[1])
-                        }}
-                        onAfterChange={(val) => {
-                            dispatch(setQueryParam('minPrice', val[0]))
-                            dispatch(setQueryParam('maxPrice', val[1]))
-                        }}
-                        trackClassName="thermometer-track"
-                        defaultValue={[_minPrice, _maxPrice]}
-                        ariaLabel={['Lower thumb', 'Upper thumb']}
-                        ariaValuetext={state => `Thumb value ${state.valueNow}`}
-                        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-                        pearling
-                        minDistance={1}
-                        min={_minPrice}
-                        max={_maxPrice}
-                    />
+                    {(_maxPrice && _minPrice) && (
+                        <ReactSlider
+                            className="thermometer-slider"
+                            thumbClassName="thermometer-thumb"
+                            onChange={(val) => {
+                                setMinPrice(val[0])
+                                setMaxPrice(val[1])
+                            }}
+                            onAfterChange={(val) => {
+                                dispatch(setQueryParam('minPrice', val[0]))
+                                dispatch(setQueryParam('maxPrice', val[1]))
+                            }}
+                            trackClassName="thermometer-track"
+                            defaultValue={[_minPrice, _maxPrice]}
+                            ariaLabel={['Lower thumb', 'Upper thumb']}
+                            ariaValuetext={state => `Thumb value ${state.valueNow}`}
+                            renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                            pearling
+                            minDistance={1}
+                            min={_minPrice}
+                            max={_maxPrice}
+                        />
+                    )}
                 </div>
                 <div className="range-value-info">
                     <p className="price-from">{_minPrice} zł</p>
@@ -218,29 +212,31 @@ function SortersSideMobile({minPrice, setMinPrice, maxPrice, setMaxPrice}) {
                         }} className="price-range">
                             <p className="price-range-header">Cena:</p>
                             <div style={{height: '24px'}} className="in-price-range-all-slider-wrapper">
-                                <ReactSlider
-                                    className="thermometer-slider thermometer-slider-mobile"
-                                    thumbClassName="thermometer-thumb"
-                                    onChange={(val) => {
-                                        setMinPrice(val[0])
-                                        setMaxPrice(val[1])
-                                        // dispatch(setQueryParam('minPrice', val[0]))
-                                        // dispatch(setQueryParam('maxPrice', val[1]))
-                                    }}
-                                    onAfterChange={(val) => {
-                                        dispatch(setQueryParam('minPrice', val[0]))
-                                        dispatch(setQueryParam('maxPrice', val[1]))
-                                    }}
-                                    trackClassName="thermometer-track"
-                                    defaultValue={[0, 9999]}
-                                    ariaLabel={['Lower thumb', 'Upper thumb']}
-                                    ariaValuetext={state => `Thumb value ${state.valueNow}`}
-                                    renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
-                                    pearling
-                                    min={0}
-                                    max={9999}
-                                    minDistance={10}
-                                />
+                                {(minPrice && maxPrice) && (
+                                    <ReactSlider
+                                        className="thermometer-slider thermometer-slider-mobile"
+                                        thumbClassName="thermometer-thumb"
+                                        onChange={(val) => {
+                                            setMinPrice(val[0])
+                                            setMaxPrice(val[1])
+                                            // dispatch(setQueryParam('minPrice', val[0]))
+                                            // dispatch(setQueryParam('maxPrice', val[1]))
+                                        }}
+                                        onAfterChange={(val) => {
+                                            dispatch(setQueryParam('minPrice', val[0]))
+                                            dispatch(setQueryParam('maxPrice', val[1]))
+                                        }}
+                                        trackClassName="thermometer-track"
+                                        defaultValue={[minPrice, maxPrice]}
+                                        ariaLabel={['Lower thumb', 'Upper thumb']}
+                                        ariaValuetext={state => `Thumb value ${state.valueNow}`}
+                                        renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>}
+                                        pearling
+                                        min={minPrice}
+                                        max={maxPrice}
+                                        minDistance={10}
+                                    />
+                                )}
                             </div>
                             <div style={{position: 'relative'}} className="range-value-info">
                                 <p className="price-from">{minPrice} zł</p>
@@ -356,7 +352,7 @@ function CategoryItemsPage() {
                     <SortersSideDesktop _minPrice={_minPrice} _maxPrice={_maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
                 )}
                 {viewportWidth <= 1040 && (
-                    <SortersSideMobile minPrice={minPrice} maxPrice={maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
+                    <SortersSideMobile minPrice={_minPrice} maxPrice={_maxPrice} setMaxPrice={setMaxPrice} setMinPrice={setMinPrice} />
                 )}
                 <div className="items-display">
                     {(loadMode && false) && (

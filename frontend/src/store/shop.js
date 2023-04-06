@@ -23,6 +23,7 @@ const LOAD_DELIVERIES = 'shop/loadDeliveries'
 const ADD_SEARCH_FILTER = 'shop/addSearchFilter'
 const REMOVE_SEARCH_FILTER = 'shop/removeSearchFilter'
 const CLEAR_QUERY = 'shop/clearQueryParams'
+const CLEAR_CART = 'shop/clearCart'
 
 // Normal action creator
 
@@ -150,6 +151,12 @@ export const removeCartItem = (itemId, removeAll=false) => {
     }
 }
 
+export const clearCart = () => {
+    return {
+        type: CLEAR_CART,
+    }
+}
+
 export const loadCart = () => {
     return {
         type: LOAD_CART,
@@ -273,8 +280,8 @@ export const sendUserReviewVote = (reviewId, voteValue) => async (dispatch) => {
 
     if(response.ok) {
         const review = await response.json()
-        dispatch(getItemReviews(review.itemId))
-        dispatch(getUserReviewsVotes(undefined, review.itemId))
+        // dispatch(getItemReviews(review.itemId))
+        // dispatch(getUserReviewsVotes(undefined, review.itemId))
     }
 }
 
@@ -340,8 +347,8 @@ const initialState = {
         cartLength: 0,
         itemsSpecs: {}
     },
-    maxPrice: 10,
-    minPrice: 0
+    maxPrice: null,
+    minPrice: null
 };
 
 // Reducer
@@ -525,6 +532,12 @@ const shopReducer = (state = initialState, action) => {
         case CLEAR_QUERY: {
             const newState = {...state}
             newState.queryParams = {...newState.queryParams, filters: {}}
+            return newState
+        }
+        case CLEAR_CART: {
+            const newState = {...state}
+            newState.cart.items = []
+            window.localStorage.setItem('cart', JSON.stringify(newState.cart))
             return newState
         }
         default: {

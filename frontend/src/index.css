@@ -32,3 +32,24 @@ li {
     filter: brightness(0.75);
   }
 } */
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ebeaea;
+}
+
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(21, 126, 224);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(19, 108, 191);
+}

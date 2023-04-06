@@ -1,0 +1,43 @@
+.check-icon {
+    color: white;
+    /* font-size: 20px; */
+    background-color: rgb(90, 240, 90);
+    padding: 5px;
+    border-radius: 999px;
+    /* border: 1px solid white; */
+    margin-left: 10px;
+    font-size: 35px;
+    position: relative;
+    top: 2px;
+}
+
+.pay-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #393939;
+}
+
+.pay-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 255px 0;
+    gap: 20px;
+}
+
+.pay-info {
+    font-size: 22px;
+}
+
+.pay-info span {
+    font-weight: 500;
+    color: rgb(62, 162, 255);
+    cursor: pointer;
+}
+
+.pay-info span:hover {
+    text-decoration: underline;
+}
